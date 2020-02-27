@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">foras</string>
+    <string name="facebook_app_id">2349548098397548</string>
+    <string name="default_notification_channel_id" translatable='false'>fcm_default_channel</string>
+</resources>

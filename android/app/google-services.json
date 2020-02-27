@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "324911742993",
+    "firebase_url": "https://foras-8a353.firebaseio.com",
+    "project_id": "foras-8a353",
+    "storage_bucket": "foras-8a353.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:324911742993:android:234bed3826903675c3b1b0",
+        "android_client_info": {
+          "package_name": "com.foras"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "324911742993-rpqcig3rncipk62f00kqlg25dqtoq1ot.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9egVVp0WFedS72hAAcyWMBYur_jNuI-E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "324911742993-rpqcig3rncipk62f00kqlg25dqtoq1ot.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
