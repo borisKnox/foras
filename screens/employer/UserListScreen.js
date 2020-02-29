@@ -232,7 +232,7 @@ export default class UserListScreen extends React.Component {
         global.favoriteIndividualStatus = this.state.newIndividualList[index].favoriteStatus;
         global.detailLogo = this.state.newIndividualList[index].logo;
 
-        this.props.navigation.replace('UserDetail');
+        this.props.navigation.navigate('UserDetail');
     }
 
     sort(sortCategory){
@@ -357,6 +357,18 @@ export default class UserListScreen extends React.Component {
                     <KeyboardAvoidingView style={styles.container}>
                         <Spinner color="#FFF" visible={this.state.spinner}/>                
                         <Image source={require('../../assets/images/background-image.png')} style={styles.backgroundImage}/>
+
+                        <View style={{
+                            width:'100%',    
+                            backgroundColor:'#8C2800',
+                            alignItems: "center",
+                            height: 50,
+                            justifyContent: "center",
+                            width: Dimensions.get('window').width * 0.85,
+                            borderRadius: 10
+                        }}>
+                            <Text style={{color: 'white'}}>you can contact 30 in month</Text>
+                        </View>
 
                         <View style={{marginBottom: 70}}>
                             <FlatList
@@ -505,8 +517,6 @@ const styles = StyleSheet.create({
       
         width: '100%',
     },
-
-
 
     bottomButtonPart: {
         position: 'absolute',
