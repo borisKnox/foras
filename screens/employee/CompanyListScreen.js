@@ -220,7 +220,7 @@ export default class CompanyListScreen extends React.Component {
         global.companyDetailId = this.state.newCorporatesList[index].id;
         global.favoriteCorporateStatus = this.state.newCorporatesList[index].favoriteStatus;
         global.detailLogo = this.state.newCorporatesList[index].logo;
-        this.props.navigation.replace('CompanyDetail1');
+        this.props.navigation.navigate('CompanyDetail1');
     }
 
     sort(sortCategory){
