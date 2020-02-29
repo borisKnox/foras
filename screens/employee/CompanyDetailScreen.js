@@ -52,7 +52,7 @@ export default class CompanyDetailScreen extends React.Component {
         console.log("==============didmonunt of companyDetailScreen==============")
         this.setState({spinner: true});
         api.getCorporatesDetail(global.token, global.companyDetailId).then((res)=>{
-            console.log('jobDetailData response____');
+            console.log('getCorporatesDetail response____');
             if(res.status == 200){
                 this.setState({spinner: false});
                 this.setState({companyDetailData: res.data});
@@ -168,7 +168,10 @@ export default class CompanyDetailScreen extends React.Component {
         if(this.state.message){
             this.setState({spinner: true});               
 
-            api.sendMessages(global.token, global.companyDetailId, this.state.message).then((res)=>{
+            // sendMessages(token, receiver_id, job_id, message, subject, type)
+
+            api.sendMessages(global.token, global.companyDetailId, '', this.state.message, "", "common").then((res)=>{
+            //api.sendMessages(global.token, global.companyDetailId, this.state.message).then((res)=>{
                 console.log('sendMessage response____', res);  
                 if(res.status == 200){
                     this.setState({spinner: false});               
