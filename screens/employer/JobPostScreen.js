@@ -319,10 +319,22 @@ export default class JobPostScreen extends React.Component {
                     <View style={styles.container}>
                         <Spinner color="#FFF" visible={this.state.spinner}/>                
                         <StripeHeader imageUrl ={{uri: global.loginInfo.logo}}/>                        
-        
+                        <View style={{
+                            width:'100%',    
+                            backgroundColor:'#8C2800',
+                            alignItems: "center",
+                            height: 50,
+                            justifyContent: "center",
+                            width: Dimensions.get('window').width * 0.85,
+                            borderRadius: 10,
+                            marginBottom: 20
+                        }}>
+                            <Text style={{color: 'white'}}>you can post 3</Text>
+                        </View>
                         <ScrollView  contentContainerStyle={styles.contentContainer}>
                             <InputScrollView contentContainerStyle={{flex: 1}} topOffset={5}>
                                 <View style={{width: Dimensions.get('window').width * 0.85, overflow: 'hidden' , borderRadius: 10, backgroundColor: 'white', alignItems: 'center', marginTop: 5}}>
+                                    
                                     <Text style={{fontFamily: 'TheSans-bold', marginTop:15 }}>{Labels._job_post_title}</Text>
                                     <Dash style={{width: '90%', height: 1, marginTop: 10,}} dashColor={Colors.thirdBackground}></Dash>
 
