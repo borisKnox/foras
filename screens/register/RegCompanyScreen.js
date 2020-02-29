@@ -117,7 +117,7 @@ export default class RegCompanyScreen extends React.Component {
         UserData.token = global.token;        
 
         api.registerCorporateProfile(UserData).then((res)=>{
-            console.log('emailLogin response____');  
+            console.log('registerCorporateProfile response____');  
             console.log(res);
             if(res.status == 200){
                 this.setState({spinner: false});
