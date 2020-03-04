@@ -329,7 +329,7 @@ export default class JobPostScreen extends React.Component {
                             borderRadius: 10,
                             marginBottom: 20
                         }}>
-                            <Text style={{color: 'white'}}>you can post 3</Text>
+                            <Text style={{color: 'white'}}>يمكنك نشر 3 وظائف</Text>
                         </View>
                         <ScrollView  contentContainerStyle={styles.contentContainer}>
                             <InputScrollView contentContainerStyle={{flex: 1}} topOffset={5}>

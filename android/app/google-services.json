@@ -1,35 +1,50 @@
 {
   "project_info": {
-    "project_number": "324911742993",
-    "firebase_url": "https://foras-8a353.firebaseio.com",
-    "project_id": "foras-8a353",
-    "storage_bucket": "foras-8a353.appspot.com"
+    "project_number": "447807123147",
+    "firebase_url": "https://foras-260407.firebaseio.com",
+    "project_id": "foras-260407",
+    "storage_bucket": "foras-260407.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:324911742993:android:234bed3826903675c3b1b0",
+        "mobilesdk_app_id": "1:447807123147:android:70c81f6a628daa913f754e",
         "android_client_info": {
           "package_name": "com.foras"
         }
       },
       "oauth_client": [
         {
-          "client_id": "324911742993-rpqcig3rncipk62f00kqlg25dqtoq1ot.apps.googleusercontent.com",
+          "client_id": "447807123147-73fofdi9p9n5eo3v257j7rqt8husap08.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.foras",
+            "certificate_hash": "8c8639241d9ca1bd07468b065530f0703b78fa92"
+          }
+        },
+        {
+          "client_id": "447807123147-php0i7k63gfpi0o2140pk2nov63hk0kr.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB9egVVp0WFedS72hAAcyWMBYur_jNuI-E"
+          "current_key": "AIzaSyDEPTlNf_mblPPzLF1LIND3cH5N17yWoyM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "324911742993-rpqcig3rncipk62f00kqlg25dqtoq1ot.apps.googleusercontent.com",
+              "client_id": "447807123147-php0i7k63gfpi0o2140pk2nov63hk0kr.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "447807123147-r01sqd6oakub28saff268mrag5ekmlhu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.foras"
+              }
             }
           ]
         }

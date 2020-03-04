@@ -29,6 +29,7 @@ import {jobReviewsData} from '../../constants/Constants';
 import api from '../../constants/api';
 import Colors from '../../constants/Colors';
 import { Labels } from '../../constants/Langs';
+import firebaseSvc from '../../FirebaseSvc';
 
 const jobData = [
     {
@@ -286,28 +287,44 @@ export default class JobDetailScreen extends React.Component {
         this.setState({sendApplyJobModal: false});
 
         if(this.state.applyJobMessage){
-            this.setState({spinner: true});               
 
-            api.sendMessages(global.token, this.state.jobDetailData.job.users.id, this.state.jobDetailData.job.id, this.state.applyJobMessage, "Apply Job Message", "apply_job").then((res)=>{
-                console.log('sendMessage response____', res);  
-                if(res.status == 200){
-                    this.setState({spinner: false});               
-                    Toast.show(Labels.sendMessageSuccessTxt);
+            this.setState({spinner: true});               
+            const sender = {
+                sender_id: global.token,
+                name: global.loginInfo.name
+            }
+            const message = [{
+                sender_id: global.token,
+                receiver_id: global.userDetailApiToken,
+                text: this.state.applyJobMessage,
+                message: this.state.applyJobMessage,
+                subject: 'Apply Job Message',
+                sender: sender
+            }];
+
+            firebaseSvc.send(message);
+            this.setState({spinner: false});
+            Toast.show("Message Sent Successfully");
+            // api.sendMessages(global.token, this.state.jobDetailData.job.users.id, this.state.jobDetailData.job.id, this.state.applyJobMessage, "Apply Job Message", "apply_job").then((res)=>{
+            //     console.log('sendMessage response____', res);  
+            //     if(res.status == 200){
+            //         this.setState({spinner: false});               
+            //         Toast.show(Labels.sendMessageSuccessTxt);
                     
-                }else{
-                    Alert.alert(
-                        'Error!',
-                        res.errors,
-                        [
-                            {text: 'OK', onPress: () =>  this.setState({spinner: false})},
-                        ],
-                        {cancelable: false},
-                    );
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+            //     }else{
+            //         Alert.alert(
+            //             'Error!',
+            //             res.errors,
+            //             [
+            //                 {text: 'OK', onPress: () =>  this.setState({spinner: false})},
+            //             ],
+            //             {cancelable: false},
+            //         );
+            //     }
+            // })
+            // .catch((error) => {
+            //     console.log(error);
+            // })
         }else{
             Toast.show("Pleae fill the message text");
         }

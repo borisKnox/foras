@@ -124,16 +124,16 @@ export default class RegCompanyScreen extends React.Component {
                 
                 global.loginInfo = res.data;
 
-                this.props.navigation.replace('TutorialScreen');                           
+                this.props.navigation.replace('AddPhoneNumberScreen');                           
             }else{
                 Alert.alert(
                     '',
-                    [typeof(res.errors.address) == "undefined" ? "" : res.errors.address.toString()]  + " " + 
-                    [typeof(res.errors.state) == "undefined" ? "": res.errors.state.toString()] + " " +
-                    [typeof(res.errors.city) == "undefined" ? "": res.errors.city.toString()] + " " +
-                    [typeof(res.errors.phone) == "undefined" ? "": res.errors.phone.toString()] + " " +
-                    [typeof(res.errors.mobile) == "undefined" ? "": res.errors.mobile.toString()] + " " +
-                    [typeof(res.errors.commercial_registeration) == "undefined" ? "": res.errors.commercial_registeration.toString()] + " " +
+                    [typeof(res.errors.address) == "undefined" ? "" : res.errors.address.toString()]  + "\n" + 
+                    [typeof(res.errors.state) == "undefined" ? "": res.errors.state.toString()] + "\n" +
+                    [typeof(res.errors.city) == "undefined" ? "": res.errors.city.toString()] + "\n" +
+                    [typeof(res.errors.phone) == "undefined" ? "": res.errors.phone.toString()] + "\n" +
+                    [typeof(res.errors.mobile) == "undefined" ? "": res.errors.mobile.toString()] + "\n" +
+                    [typeof(res.errors.commercial_registeration) == "undefined" ? "": res.errors.commercial_registeration.toString()] + "\n" +
                     [typeof(res.errors.sector) == "undefined" ? "": res.errors.sector],
                     [
                         {text: 'OK', onPress: () =>  this.setState({spinner: false})},

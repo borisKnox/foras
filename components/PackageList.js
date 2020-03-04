@@ -79,7 +79,7 @@ export default class PackageList extends Component {
     },
   };
   onPressed(item) {
-    this.setState({ value: item.key });
+    this.setState({ value: item.id });
     global.package = item;
     console.log(item.price);
   }
@@ -91,33 +91,33 @@ export default class PackageList extends Component {
       <View>
         {options.map(item => {
           return (
-            <View key={item.key}>
+            <View key={item.id}>
                 <TouchableOpacity
                         activeOpacity={1}
-                        key = {item.key}
-                        style={item.key == value? this.state.containerPress: this.state.container}
+                        key = {item.id}
+                        style={item.id == value? this.state.containerPress: this.state.container}
                         onPress={() => this.onPressed(item)}
                 >
                         
-                        <Text style ={item.key == value? this.state.summaryPress: this.state.summary}>
-                            Directly contact {item.contact} candidates
+                        <Text style ={item.id == value? this.state.summaryPress: this.state.summary}>
+                            الاتصال مباشرة {item.contactCount}  مرشحين
                         </Text>
-                        <View style = {item.key == value? this.state.priceBoxPress: this.state.priceBox}>
+                        <View style = {item.id == value? this.state.priceBoxPress: this.state.priceBox}>
                             <Text style = {this.state.priceText}>
                                 ${item.price}
                             </Text>
                         </View>
                         <View style = {this.state.detailsBox}>
-                            <Text style = {item.key == value? this.state.textPress: this.state.text}>
-                                contact {item.contact} candiates directly
+                            <Text style = {item.id == value? this.state.textPress: this.state.text}>
+                                الاتصال {item.contactCount} مرشحا مباشرة
                                 <Image source={checkIconUri}/>
                             </Text>
-                            <Text style = {item.key == value? this.state.textPress: this.state.text}>
-                                Post {item.post} jobs
+                            <Text style = {item.id == value? this.state.textPress: this.state.text}>
+                                يمكنك نشر {item.postCount} وظائف.
                                 <Image source={checkIconUri}/>
                             </Text>
-                            <Text style = {item.key == value? this.state.textPress: this.state.text}>
-                                Advance CV search
+                            <Text style = {item.id == value? this.state.textPress: this.state.text}>
+                            البحث المتقدم عن السير الذاتية
                                 <Image source={checkIconUri}/>
                             </Text>
                         </View>

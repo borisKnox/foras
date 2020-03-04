@@ -214,30 +214,46 @@ export default class MainScreen extends React.Component {
         const channel = new firebase.notifications.Android.Channel('fcm_default_channel', 'Demo app name', firebase.notifications.Android.Importance.High)
         .setDescription('Demo app description')
         .setSound('sampleaudio.mp3');
+
         firebase.notifications().android.createChannel(channel);
 
         this.notificationListener = firebase.notifications().onNotification((notification) => {
             const { title, body } = notification; 
+            if(Platform.OS === 'android'){
+                const localNotification = new firebase.notifications.Notification({
+                    sound: 'default',
+                    show_in_foreground: true,
+                })
+                .setNotificationId(notification.notificationId)
+                .setTitle(notification.title)
+                .setSubtitle(notification.subtitle)
+                .setBody(notification.body)
+                .setData(notification.data)
+                .android.setChannelId('fcm_default_channel') // e.g. the id you chose above
+                .android.setSmallIcon('@drawable/ic_launcher') // create this icon in Android Studio
+                .android.setColor('#000000') // you can set a color here
+                .android.setPriority(firebase.notifications.Android.Priority.High)
+                .android.setAutoCancel(true); // To remove notification when tapped on it
 
-            const localNotification = new firebase.notifications.Notification({
-                sound: 'default',
-                show_in_foreground: true,
-            })
-            .setNotificationId(notification.notificationId)
-            .setTitle(notification.title)
-            .setSubtitle(notification.subtitle)
-            .setBody(notification.body)
-            // .setData(notification.data)
-            .android.setChannelId('fcm_default_channel') // e.g. the id you chose above
-            .android.setSmallIcon('@drawable/ic_launcher') // create this icon in Android Studio
-            .android.setColor('#000000') // you can set a color here
-            .android.setPriority(firebase.notifications.Android.Priority.High)
-            .android.setAutoCancel(true); // To remove notification when tapped on it
+                firebase.notifications()
+                    .displayNotification(localNotification)
+                    .catch(err => console.error(err));
+            } else if (Platform.OS === 'ios') {
 
-            firebase.notifications()
-                .displayNotification(localNotification)
-                .catch(err => console.error(err));
-            });
+                const localNotification = new firebase.notifications.Notification()
+                  .setNotificationId(notification.notificationId)
+                  .setTitle(notification.title)
+                  .setSubtitle(notification.subtitle)
+                  .setBody(notification.body)
+                  .setData(notification.data)
+                  .ios.setBadge(notification.ios.badge);
+        
+                firebase.notifications()
+                  .displayNotification(localNotification)
+                  .catch(err => console.error(err));
+        
+              }
+        });
 
         /*
         * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
@@ -281,41 +297,7 @@ export default class MainScreen extends React.Component {
             .android.setSmallIcon('ic_launcher');
             firebase.notifications().displayNotification(notification);
         });
-    } 
-
-    // async createNotificationListeners() {
-    //     this.notificationListener = firebase.notifications().onNotification((notification) => {
-    //         const { title, body } = notification;
-    //         this.showAlert(title, body);
-    //     });
-        
-    //     this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
-    //     const { title, body } = notificationOpen.notification;
-    //     this.showAlert(title, body);
-    //     });
-        
-    //     const notificationOpen = await firebase.notifications().getInitialNotification();
-    //     if (notificationOpen) {
-    //     const { title, body } = notificationOpen.notification;
-    //     this.showAlert(title, body);
-    //     }
-        
-    //     this.messageListener = firebase.messaging().onMessage((message) => {
-    //     console.log(JSON.stringify(message));
-    //     });
-    // }
-      
-    showAlert(title, body) {
-        Alert.alert(
-            title, body,
-            [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ],
-            { cancelable: false },
-        );
     }
-    
-
     //------------------Notification End---------------//
     
     toggleFitlerModal = () => {

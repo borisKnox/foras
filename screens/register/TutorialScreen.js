@@ -166,8 +166,6 @@ export default class TutorialScreen extends React.Component {
             this.props.navigation.replace('Main');
         }
 
-       
-
     }
 
     render() {

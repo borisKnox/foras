@@ -227,8 +227,9 @@ export default class UserListScreen extends React.Component {
     };
 
     onSelect = (index) => {
-        console.log('===>>>>', index);
+        console.log('===>>>>');
         global.userDetailId = this.state.newIndividualList[index].id;
+        global.userDetailApiToken = this.state.newIndividualList[index].api_token;
         global.favoriteIndividualStatus = this.state.newIndividualList[index].favoriteStatus;
         global.detailLogo = this.state.newIndividualList[index].logo;
 
@@ -367,7 +368,7 @@ export default class UserListScreen extends React.Component {
                             width: Dimensions.get('window').width * 0.85,
                             borderRadius: 10
                         }}>
-                            <Text style={{color: 'white'}}>you can contact 30 in month</Text>
+                            <Text style={{color: 'white'}}>يمكنك الاتصال 30 في الشهر</Text>
                         </View>
 
                         <View style={{marginBottom: 70}}>

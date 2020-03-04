@@ -30,66 +30,28 @@ import api from '../../constants/api';
 const logoUri = require('../../assets/images/icon-logo.png');
 const checkIconUri = require('../../assets/images/Check.png');
 
- 
- const options = [
-	{
-		key: 'pay',
-		text: 'Most High Pay',
-	},
-	{
-		key: 'performance',
-		text: 'Most Perfomance',
-	},
-	{
-		key: 'aToZ',
-		text: 'A - Z',
-	},
-	{
-		key: 'zToA',
-		text: 'Z - A',
-	},
-];
 export default class CompanyPackage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             spinner: false,
-            packages: [
-                {
-                    key: 0,
-                    contact: '30',
-                    post: '3',
-                    price: '250'
-                 },
-                 {
-                    key: 1,
-                    contact: '20',
-                    post: '2',
-                    price: '200'
-                 },
-                 {
-                    key: 2,
-                    contact: '10',
-                    post: '1',
-                    price: '150'
-                 }
-                ],
+            packages: [],
         }
     }
 
     componentDidMount(){     
         console.log(global.token);
-        // api.getJobCategories(global.token).then((res)=>{
-        //     console.log('message response____', res);  
-        //     if(res.status == 200){
-        //         console.log(res.data);
-        //     }else{
-        //         console.log(res);
-        //     }
-        // })
-        // .catch((error) => {
-        //     console.log(error);
-        // })
+        api.getPackageList(global.token).then((res)=>{
+            console.log('getPackageList response____', res);  
+            if(res.status == 200){
+             this.setState({ packages: res.data})
+            }else{
+                console.log(res);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        })
     }
 
     goNext() {

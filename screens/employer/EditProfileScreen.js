@@ -281,7 +281,7 @@ export default class EditProfileScreen extends React.Component {
                         
                         </View>
 
-                        <TouchableOpacity onPress={()=>this.changeLogo()} style={{marginTop: -10, marginBottom: 10, width: '40%', height: 20, borderRadius: 20, backgroundColor: Colors.primarySpeical, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                        <TouchableOpacity onPress={()=>this.changeLogo()} style={{marginTop: 10, marginBottom: 10, width: '40%', height: 20, borderRadius: 20, backgroundColor: Colors.primarySpeical, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
                             <Text style={{color: Colors.white, paddingLeft: 6}}>{Labels.edit_UploadNewImage}</Text>                            
                         </TouchableOpacity>
 

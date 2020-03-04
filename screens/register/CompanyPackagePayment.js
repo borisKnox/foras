@@ -21,7 +21,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { Chevron, Triangle } from 'react-native-shapes';
 
 import api from '../../constants/api';
-import {UserData} from '../../constants/Constants';
+import {UserData, LoginData} from '../../constants/Constants';
 
 import StripeFooter from '../../components/StripeFooter';
 import Colors from '../../constants/Colors';
@@ -77,13 +77,38 @@ export default class CompanyPackagePayment extends React.Component {
 
     componentDidMount(){
         //console.log(global.package);
-        this.state.packageID = global.package.key;
+        this.state.packageID = global.package.id;
         this.state.payAmount = global.package.price;
     }
 
 
     goNext() {
-        console.log(this.state);       
+        // console.log(this.state);
+
+        const packageData = {
+            email: LoginData.email,
+            packageID :this.state.packageID,
+            cardNumber:this.state.cardNumber,
+            cardName :this.state.cardName,
+            expMonth: this.state.expMonth,
+            expYear:this.state.expYear,
+            csvNumber:this.state.csvNumber,
+            token : global.token,
+        }
+        console.log(packageData);
+
+        api.setPackage(packageData).then((res)=>{
+            console.log('setPackage response____', res);  
+            if(res.status == 200){
+                this.props.navigation.replace('TutorialScreen');
+            }else{
+                Alert(res);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+        
     }
 
 

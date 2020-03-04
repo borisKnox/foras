@@ -22,6 +22,7 @@ import Colors from '../../constants/Colors';
 import { Labels } from '../../constants/Langs';
 import { Container, Header, Title, Content,  Footer, FooterTab,  Body, 
     Left, Right, Icon, Button, } from "native-base";
+import firebaseSvc from '../../FirebaseSvc';
 
 const messageData = [
     {
@@ -44,8 +45,8 @@ class Item extends React.Component{
         super(props);
     }
 
-    onSelect = (data) => {
-        this.props.onSelect(data);
+    onSelect = (item) => {
+        this.props.onSelect(item);
     };
 
     render(){
@@ -62,7 +63,7 @@ class Item extends React.Component{
                         <Text style={styles.messageTime}>{this.props.item.created_at}</Text>
                     </TouchableOpacity>
                     :
-                    <TouchableOpacity style={styles.messageTextContainer} >
+                    <TouchableOpacity style={styles.messageTextContainer} onPress={() => this.onSelect(this.props.item)}>
                         {/* <Text style={styles.messageTitle}>{this.props.item.subject}</Text> */}
                         <Text style={styles.name}>{this.props.item.sender.name}</Text>
                         <Text style={styles.messageContent}>{this.props.item.message}</Text>                    
@@ -79,33 +80,24 @@ export default class MessageScreen extends React.Component {
         super(props);
         this.state = {
             spinner: false,
-            messageData: [],
+            messages: [],
             favoriteIndividualsList: []
         }
     }
 
     componentDidMount(){
         this.setState({spinner: true});
-        api.message(global.token).then((res)=>{
-            console.log('message response____', res);  
-            if(res.status == 200){
-                this.setState({spinner: false});
-                this.setState({messageData: res.data});                
-                
-            }else{
-                Alert.alert(
-                    'Error!',
-                    'Error',
-                    [
-                        {text: 'OK', onPress: () =>  this.setState({spinner: false})},
-                    ],
-                    {cancelable: false},
-                );
+        console.log(global.token);
+        let senderid = [];
+        firebaseSvc.ref.orderByChild('receiver_id').equalTo(global.token).on("child_added", function(snapshot) {
+            if(senderid.indexOf(snapshot.val().sender_id) == -1){
+                console.log("snapchat in corporator", snapshot);
+                this.state.messages.unshift(snapshot.val());
+                this.setState({messages: this.state.messages, newmsg: true});
+                senderid.push(snapshot.val().sender_id);
             }
-        })
-        .catch((error) => {
-            console.log(error);
-        })
+            
+        }, this);
 
         api.getFavoriteIndividuals(global.token).then((res)=>{
             console.log('getFavoriteIndividuals response____', );  
@@ -130,21 +122,18 @@ export default class MessageScreen extends React.Component {
         }) 
     }
 
-    onSelect = (data) => {
-        global.favoriteIndividualStatus = false
+    onSelect = (item) => {
+        // global.favoriteIndividualStatus = false
 
-        this.state.favoriteIndividualsList.map((datas, index)=>{
-            if(datas.individual_id == data.sender_id){
-                global.favoriteIndividualStatus = true;                
-            }
-        })
-        global.userDetailId = data.sender.id;
-        global.detailLogo = data.sender.logo;
-        global.job_id = data.job_id;
-        console.log(data);
-        // global.jobDetailId = data.job_id;
-        // global.detailLogo = data.sender.logo;
-        global.chatDetail = data;
+        // this.state.favoriteIndividualsList.map((datas, index)=>{
+        //     if(datas.individual_id == item.sender_id){
+        //         global.favoriteIndividualStatus = true;                
+        //     }
+        // })
+        // global.userDetailId = item.sender_id;
+        // global.detailLogo = item.sender.logo;
+        // global.job_id = item.job_id;
+        global.chatDetail = item;
         this.props.navigation.navigate('Chater');
     }
 
@@ -181,7 +170,7 @@ export default class MessageScreen extends React.Component {
 
                     
                             <FlatList
-                                data={this.state.messageData}
+                                data={this.state.messages}
                                 renderItem={({ item }) => <Item item={item} onSelect={this.onSelect}  />}
                                 keyExtractor={item => item.id}
                             />

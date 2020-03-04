@@ -39,7 +39,11 @@ export default class EmailVerificationScreen extends React.Component {
     }
 
     goNext() {
-        this.props.navigation.replace('AddPhoneNumberScreen');
+        if(global.isIndividual){
+            this.props.navigation.replace('RegUserInfoScreen');
+        } else{
+            this.props.navigation.replace('RegCompanyScreen');
+        }
     }
 
     render() {

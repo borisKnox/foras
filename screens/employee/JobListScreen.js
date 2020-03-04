@@ -230,8 +230,9 @@ export default class JobListScreen extends React.Component {
 
 
     onSelect = (index) => {
-        console.log('===>>>>', index);
+        // console.log('===>>>>', this.state.newJobList[index]);
         global.jobDetailId = this.state.newJobList[index].job_id;
+        global.userDetailApiToken = this.state.newJobList[index].api_token;
         global.favoriteJobStatus = this.state.newJobList[index].favoriteStatus;
         global.detailLogo = this.state.newJobList[index].logo;
         this.props.navigation.replace('JobDetail1');

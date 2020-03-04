@@ -36,33 +36,37 @@ export default class ChaterScreen extends React.Component {
         }
     }
 
-    get user() {
-        return {
-            name: global.loginInfo.name ,
-            email: global.loginInfo.email,
-            avatar: global.loginInfo.logo,
-            id: firebaseSvc.uid,
-            _id: firebaseSvc.uid,
-        };
-    }
-
     componentDidMount(){
-        // console.log( (this.props.navigation || {}).data );
-        //console.log(global.chatDetail);
         this.setState({
             senderName: global.chatDetail.sender.name,
             jobID: global.chatDetail.job_id,
             jobTitle: global.chatDetail.subject
         });
-
-        firebaseSvc.refOn(message => 
-            this.setState(previousState => ({
-              messages: GiftedChat.append(previousState.messages, message),
-              })
-            )
-          );
-        
+        console.log('dddddddddd',global.chatDetail);
+        // firebaseSvc.refOn(message => 
+        //     this.setState(previousState => ({
+        //       messages: GiftedChat.append(previousState.messages, message),
+        //       })
+        //     )
+        // );
+        if (global.chatDetail!=this.state.messages) {
+  
+            console.log("global.chatDetail===>",global.chatDetail);
+            
+            this.state.messages=[];
+            this.setState({messages: this.state.messages});
+    
+            firebaseSvc.ref.on("child_added", function(snapshot) {
+              
+              if(snapshot.child('sender_id').val() == global.chatDetail.sender_id && snapshot.child('receiver_id').val() == global.loginInfo.api_token || 
+              snapshot.child('receiver_id').val() == global.chatDetail.sender_id && snapshot.child('sender_id').val() == global.loginInfo.api_token ){
+                this.state.messages.unshift(snapshot.val());
+              }         
+              this.setState({messages: this.state.messages});
+              }, this);
+        }     
     }
+
     componentWillUnmount() {
         firebaseSvc.refOff();
     }
@@ -71,6 +75,34 @@ export default class ChaterScreen extends React.Component {
         this.setState({spinner: true});
         this.props.navigation.replace('JobDetail1');
     }
+
+    onClickAward(jobID){
+        alert("Offer is completed");
+    }
+
+    sendMsg = (msg) => {
+
+        let message = [];
+        
+        msg.map((obj, index) =>
+            {
+              message = [{
+                sender_id: global.loginInfo.api_token,
+                receiver_id: global.chatDetail.sender_id,
+                // message: this.state.message,
+                text: obj.text,
+                message: obj.text,
+                subject: 'real message',
+                sender: { sender_id: global.loginInfo.api_token,
+                        name: global.loginInfo.name,
+                    }
+              }];
+              console.log('receiver id===>',message);
+              firebaseSvc.send(message);
+            }
+        )
+    }
+
     render() {
         return (
         <View style={{flex:1}}>
@@ -83,8 +115,11 @@ export default class ChaterScreen extends React.Component {
                     </Left>
                     <Body style={styles.headerBody }>
                         <Title style={{color: '#FFF'}}>{this.state.senderName}</Title>
-                        <TouchableOpacity onPress={() => this.goJobDetail(this.state.jobID)}>
+                        {/* <TouchableOpacity onPress={() => this.goJobDetail(this.state.jobID)}>
                             <Text>{this.state.jobTitle}</Text>
+                        </TouchableOpacity> */}
+                        <TouchableOpacity onPress={() => this.onClickAward(this.state.jobID)}>
+                            <Text>Award</Text>
                         </TouchableOpacity>
                     </Body>
                     <Right style={{flex: 1}}>
@@ -105,8 +140,7 @@ export default class ChaterScreen extends React.Component {
                     isTyping="true"
                     alwaysShowSend="true"
                     messages={this.state.messages}
-                    onSend={firebaseSvc.send}
-                    user={this.user}
+                    onSend={this.sendMsg}
                 />
             </View>
         </View>

@@ -49,8 +49,9 @@ export default class LoginScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // email: 'Corporate1@gmail.com',
-            email: 'Individual@gmail.com',
+            email: 'Corporate1@gmail.com',
+            //email: 'Individual@gmail.com',
+            //email: 'Corporasasaate1122@gmail.com',
             password: '12345678',
             userName: 'UserName111',
             register_email: 'Corporate1122@gmail.com',
@@ -479,38 +480,54 @@ export default class LoginScreen extends React.Component {
     }
     //=================GO To Next Step=============//
 
-    onPressLogin = async () => {
+    //=================firebase login for Chat===================
+
+    onFirebaseCreateAccountForChat = async () => {
+        console.log('create account... email:' + LoginData.email);
+        try {
+            const user = {
+                name: LoginData.userName,
+                email: LoginData.email,
+                password: LoginData.password,
+              };
+          await firebaseSvc.createAccount(user);
+        } catch ({ message }) {
+          console.log('create account failed. catch error:' + message);
+        }
+      };
+
+    onFirebaseLoginForChat = async () => {
         const user = {
-          email: this.state.email,
-          password: this.state.password,
+          email: LoginData.email,
+          password: LoginData.password,
         };
         console.log(user);
         firebaseSvc.login(user, this.loginSuccess, this.loginFailed);
       };
     loginSuccess = () => {
-        console.log('login successful, navigate to chat.');
+        console.log('firebase login successful ***');
     };
     loginFailed = () => {
-        console.log('login failed ***');
-        alert('Login failure. Please tried again.');
+        console.log('firebase login failed ***');
     };
+
     goNext() {
         if(this.state.isLoginMode){
+            
             console.log('Is Logined?: ', this.state.isLoginMode);
 
             this.setState({spinner: true});
 
             api.emailLogin(this.state.email, this.state.password).then((res)=>{
                 console.log('emailLogin response____');  
-                // console.log(res);
                 if(res.status == 200){
                     this.setState({spinner: false});
-
-                    // global.loginData = res.data;
 
                     global.token = res.data.api_token;
 
                     global.loginInfo = res.data;
+
+                    
 
                     LoginData.email = this.state.email;
                     LoginData.password = this.state.password;
@@ -518,16 +535,14 @@ export default class LoginScreen extends React.Component {
                     LoginData.latitude = res.data.latitude;
 
                     LoginData.login_type = 'email';
-
                     AsyncStorage.setItem('user_key', JSON.stringify(LoginData));
 
+                    this.onFirebaseLoginForChat();
                     if(res.data.role == 'individual'){
-                        this.props.navigation.replace('Main1');  
-                        // this.props.navigation.replace('TutorialScreen');  
+                        this.props.navigation.replace('Main1');
                                
                     }else{
                         this.props.navigation.replace('Main');
-                        // this.props.navigation.replace('TutorialScreen');
                     }
                 }else{
                     Alert.alert(
@@ -550,43 +565,33 @@ export default class LoginScreen extends React.Component {
 
                     this.setState({spinner: true});
 
-                    // global.userName = this.state.userName;
-                    // global.email = this.state.register_email;
-                    // global.password = this.state.register_password;
-
                     if(global.isIndividual){
                         var role = 'individual';
                     } else {
                         var role = 'corporate';
                     }
 
-                    console.log("===this.state.email===", this.state.email)
-
                     api.emailRegister(this.state.userName, this.state.register_email, this.state.register_password, role).then((res)=>{
-                        console.log('register_response____');
-                        // console.log("typeof(res.errors.password)" , typeof(res.errors.password));
-                        console.log("res.status=====" , res.status);
+                        console.log('register_response____', res);
                         if(res.status == 200){
                             this.setState({spinner: false});
                             
                             global.token = res.data.api_token;
                             global.loginInfo = res.data;
-                            
-                            LoginData.email = global.email;
-                            LoginData.password = global.password;
-                            LoginData.longitude = global.currentLongitude;
-                            LoginData.latitude = global.currentLatitude;
 
+                            LoginData.userName = this.state.userName;
+                            LoginData.email = this.state.register_email;
+                            LoginData.password = this.state.register_password;
+                            LoginData.longitude = this.state.currentLongitude;
+                            LoginData.latitude = this.state.currentLatitude;
 
                             LoginData.login_type = 'email';
 
                             AsyncStorage.setItem('user_key', JSON.stringify(LoginData));
-
-                            this.props.navigation.navigate('EmailVerificationScreen');  
-                            // this.props.navigation.navigate('RegCompanyScreen');  
-                            
-
-
+                            this.onFirebaseCreateAccountForChat();
+                            this.onFirebaseLoginForChat();
+                            this.props.navigation.navigate('EmailVerificationScreen');
+                            //this.props.navigation.navigate('CompanyPackage');
                         }else{
                             Alert.alert(
                                 '',
@@ -603,8 +608,6 @@ export default class LoginScreen extends React.Component {
                     .catch((error) => {
                         console.log(error);    
                     })
-
-                    // this.props.navigation.navigate('RegUserInfoScreen');  
                                   
                 }else{
                     Alert.alert(
@@ -629,8 +632,6 @@ export default class LoginScreen extends React.Component {
             return (
                 <InputScrollView style={styles.container} topOffset={5}>
                     <Spinner color="#FFF" visible={this.state.spinner}/>
-                    {/* <Text>Latitude: {global.currentLongitude}</Text> */}
-                    {/* <Text>Long: {global.currentLatitude}</Text> */}
                     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
                         <View style={{height: Dimensions.get('window').height * 0.7}}>
                             <View style={styles.logoContainer}>
@@ -703,12 +704,7 @@ export default class LoginScreen extends React.Component {
                                             <TouchableOpacity onPress={()=>this.goUserLogin()}>
                                                 <Image source={fbIconUri} style={styles.socialButtonImage}/>
                                             </TouchableOpacity>
-                                        </View>
-
-                                        {/* <TouchableOpacity onPress={()=>this.selectRuleFromSocial()}>
-                                            <Text>file upload</Text>
-                                        </TouchableOpacity> */}
-                                        
+                                        </View>                                        
                                         <LinkedInModal
                                             ref={this.linkedRef}
                                             clientID="86ko034ammuzb2"
@@ -826,7 +822,6 @@ export default class LoginScreen extends React.Component {
         }else{
             return (
                 <View style={{flex: 1}} >
-                    {/* <Spinner color="#FFF" visible={this.state.spinner}/> */}
                     <ImageBackground source={require('../../assets/images/splash.png')} style={{width: Dimensions.get('window').width, height: Dimensions.get('window').height}}/>
                 </View>
             );

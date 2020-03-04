@@ -1,5 +1,5 @@
-const server = "https://foras.app/api/";
-//const server = "http://10.10.10.143/api/";
+//const server = "https://foras.app/api/";
+const server = "http://10.10.10.143/api/";
 
 const emailLoginUrl = server + "auth/login";
 const socialLoginUrl = server + "auth/login/socials";
@@ -36,6 +36,10 @@ const notificationUrl = server + "notifications";
 const editProfileUrl = server + "users/profile/update";
 const uploadAvatarUrl = server + "users/profile/upload";
 
+
+const newPackageUrl  = server + "newPackage";
+const getPackageListUrl  = server + "admin/getPackageList";
+const setPackageUrl  = server + "setPackage";
 
 const api = {
 
@@ -758,14 +762,44 @@ const api = {
         return result;
     },
     
+    //==============package API ================== 
+    getPackageList(token) {
+        console.log('_====getPackageList API===');        
+        result = fetch(getPackageListUrl, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },            
+        }).then((response) => response.json());
+        
+        return result;
+    },
 
-    
-
-    
-
-    
-
-    
+    setPackage(packageData) {
+        console.log('_====setPackage API===');        
+        result = fetch(setPackageUrl, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + packageData.token
+            },
+            body: JSON.stringify({
+                "email": packageData.email,
+                "packageID": packageData.packageID,
+				"cardNumber": packageData.cardNumber,
+				"cardName": packageData.cardName,
+				"expMonth": packageData.expMonth,    
+                "expYear": packageData.expYear,
+                "csvNumber": packageData.csvNumber,  
+                "expYear": packageData.expYear,  
+            })       
+        }).then((response) => response.json());
+        
+        return result;
+    },
 
 }
 

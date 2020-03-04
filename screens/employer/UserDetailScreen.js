@@ -29,7 +29,8 @@ import Toast from 'react-native-simple-toast';
 
 import Colors from '../../constants/Colors';
 import { Labels } from '../../constants/Langs';
-    import HeaderScreen from './HeaderScreen';
+import firebaseSvc from '../../FirebaseSvc';
+import firebase from 'react-native-firebase';
 
 const userData = 
     {
@@ -216,26 +217,42 @@ export default class UserDetailScreen extends React.Component {
         if(this.state.offerJobMessage){
             this.setState({spinner: true});
 
-            api.sendMessages(global.token, global.userDetailId, global.job_id, this.state.offerJobMessage, "Offer Job Message", "offer_job").then((res)=>{
-                console.log('sendMessage response____', res);  
-                if(res.status == 200){
-                    this.setState({spinner: false});               
-                    Toast.show(Labels.sendMessageSuccessTxt);
+            const sender = {
+                sender_id: global.token,
+                name: global.loginInfo.name
+            }
+            const message = [{
+                sender_id: global.token,
+                receiver_id: global.userDetailApiToken,
+                text: this.state.offerJobMessage,
+                message: this.state.offerJobMessage,
+                subject: 'Offer Job Message',
+                sender: sender
+            }];
+
+            firebaseSvc.send(message);
+            this.setState({spinner: false});
+            Toast.show("Message Sent Successfully");
+            // api.sendMessages(global.token, global.userDetailId, global.job_id, this.state.offerJobMessage, "Offer Job Message", "offer_job").then((res)=>{
+            //     console.log('sendMessage response____', res);  
+            //     if(res.status == 200){
+            //         this.setState({spinner: false});               
+            //         Toast.show(Labels.sendMessageSuccessTxt);
                     
-                }else{
-                    Alert.alert(
-                        'Error!',
-                        res.errors,
-                        [
-                            {text: 'OK', onPress: () =>  this.setState({spinner: false})},
-                        ],
-                        {cancelable: false},
-                    );
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+            //     }else{
+            //         Alert.alert(
+            //             'Error!',
+            //             res.errors,
+            //             [
+            //                 {text: 'OK', onPress: () =>  this.setState({spinner: false})},
+            //             ],
+            //             {cancelable: false},
+            //         );
+            //     }
+            // })
+            // .catch((error) => {
+            //     console.log(error);
+            // })
         }else{
             Toast.show("Pleae fill the message text");
         }

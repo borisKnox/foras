@@ -54,7 +54,7 @@ class EmployeeSideBar extends Component {
                                 </View>
 
                                 <View style={{flex: 2, alignItems: 'flex-start'}}>
-                                    <Text style={{color: Colors.secondaryText, fontSize: 18, fontWeight: '500'}}>{global.loginInfo.name}</Text>
+                                    <Text style={{color: Colors.secondaryText, fontSize: 18, fontWeight: '500', alignItems: 'flex-start'}}>{global.loginInfo.name}</Text>
                                     <View style={{borderRadius: 20, borderColor: Colors.secondaryText, height: 17, borderWidth: 1, alignItems: 'center', justifyContent: 'center', width: 100, marginTop: 10}}>
                                         <Text style={{color: Colors.secondaryText, fontSize: 10, borderColor: Colors.white, fontFamily: 'TheSans-Plain',}}>{Labels._goToPorfile}</Text>
                                     </View>

@@ -26,6 +26,8 @@ import { Labels } from '../../constants/Langs';
 import StripeHeader from '../../components/StripeHeader';
 
 
+const checkIconUri = require('../../assets/images/Check.png');
+
 export default class MyProfileScreen extends React.Component {
     constructor(props) {
         super(props);
@@ -44,11 +46,11 @@ export default class MyProfileScreen extends React.Component {
     };
 
     goJobPostScreen= () =>{
-        this.props.navigation.replace('JobPost');
+        this.props.navigation.navigate('JobPost');
     }
 
     goToProfileEdit =()=>{
-        this.props.navigation.replace('EditProfile');
+        this.props.navigation.navigate('EditProfile');
     }
 
 
@@ -106,7 +108,29 @@ export default class MyProfileScreen extends React.Component {
                             <TouchableOpacity style={{marginTop: 12, width: '50%', height: 30, borderRadius: 20, borderWidth: 1, alignItems: 'center', justifyContent: 'center'}} onPress={()=> this.goToProfileEdit()}>
                                 <Text style={{ color: Colors.primarySpeical}}>{Labels._company_profile_edit_button}</Text>
                             </TouchableOpacity>
-
+                            
+                            {/* <View style={{width: Dimensions.get('window').width * 0.85, overflow: 'hidden' , borderRadius: 10, backgroundColor: 'white', alignItems: 'center', marginTop: 5}}>
+                                <Text style={{marginTop:10,marginBottom:10}}>حزمة التواصل مع ٣٠ م</Text>
+                                <Dash style={{width: '90%', height: 1,}} dashColor={Colors.thirdBackground}></Dash>
+                                <View style={{alignItems: 'flex-start'}}>
+                                    <Text>
+                                        contact 30 candiates directly
+                                        <Image source={checkIconUri}/>
+                                    </Text>
+                                    <Text>
+                                        Post 3 jobs
+                                        <Image source={checkIconUri}/>
+                                    </Text>
+                                    <Text>
+                                        Advance CV search
+                                        <Image source={checkIconUri}/>
+                                    </Text>
+                                </View>
+                                <Dash style={{width: '90%', height: 1,}} dashColor={Colors.thirdBackground}></Dash>
+                                <TouchableOpacity onPress={()=> this.goJobPostScreen()} style={{marginTop: 10, marginBottom: 10, width: '85%', height: 35, borderRadius: 20, backgroundColor: '#F2620F', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                                    <Text style={{ color: 'white',}}>تجديد الحزمة او اختي</Text>
+                                </TouchableOpacity>
+                            </View> */}
                             <Dash style={{width: '90%', height: 1, marginTop: 20,}} dashColor={Colors.thirdBackground}></Dash>
 
                             <TouchableOpacity onPress={()=> this.goJobPostScreen()} style={{marginTop: 12, width: '65%', height: 35, borderRadius: 20, backgroundColor: Colors.primarySpeical, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
@@ -243,7 +267,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.secondaryBackground,
         alignItems: 'center',
-        overflow: 'hidden'
+        // overflow: 'hidden'
     },
     layoutDefault: {
         flex: 1

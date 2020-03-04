@@ -21,7 +21,7 @@ import api from '../../constants/api';
 
 import Colors from '../../constants/Colors';
 import { Labels } from '../../constants/Langs';
-
+import firebaseSvc from '../../FirebaseSvc';
 
 const messageData = [
     {
@@ -78,6 +78,7 @@ export default class MessageScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            newmsg: false,
             spinner: false,
             messageData: [],
             favoriteJobs: []
@@ -86,32 +87,22 @@ export default class MessageScreen extends React.Component {
 
     componentDidMount(){
         this.setState({spinner: true});
-        api.message(global.token).then((res)=>{
-            console.log('message response____', res);  
-            if(res.status == 200){
-                // this.setState({spinner: false});
-                this.setState({messageData: res.data});
 
-                api.getFavoriteJobs(global.token).then((res)=>{
-                    //console.log('getFavoriteJobs response____', );  
-                    if(res.status == 200){
-                        this.setState({spinner: false});
-                        this.setState({favoriteJobs: res.data});               
-                    }else{
-                        Alert.alert(
-                            'Error!',
-                            'Error',
-                            [
-                                {text: 'OK', onPress: () =>  this.setState({spinner: false})},
-                            ],
-                            {cancelable: false},
-                        );
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                })           
-                
+        let senderid = [];
+        firebaseSvc.ref.orderByChild('receiver_id').equalTo(global.token).on("child_added", function(snapshot) {
+            if(senderid.indexOf(snapshot.val().sender_id) == -1){
+                this.state.messageData.push(snapshot.val());
+                this.setState({messageData: this.state.messageData, newmsg: true});
+                senderid.push(snapshot.val().sender_id);
+            }
+            
+        }, this);
+
+        api.getFavoriteJobs(global.token).then((res)=>{
+            //console.log('getFavoriteJobs response____', );  
+            if(res.status == 200){
+                this.setState({spinner: false});
+                this.setState({favoriteJobs: res.data});               
             }else{
                 Alert.alert(
                     'Error!',
@@ -125,20 +116,20 @@ export default class MessageScreen extends React.Component {
         })
         .catch((error) => {
             console.log(error);
-        })        
+        });     
     }
 
     onSelect = (data) => {
-        global.favoriteJobStatus = false;
-        this.state.favoriteJobs.map((datas, index)=>{
-            if(data.job_id == datas.job_id){
-                global.favoriteJobStatus = true;
-            }
-        })
-        global.jobDetailId = data.job_id;
-        global.detailLogo = data.sender.logo;
+        console.log(this.state.messageData);
+        // global.favoriteJobStatus = false;
+        // this.state.favoriteJobs.map((datas, index)=>{
+        //     if(data.job_id == datas.job_id){
+        //         global.favoriteJobStatus = true;
+        //     }
+        // })
+        // global.jobDetailId = data.job_id;
+        // global.detailLogo = data.sender.logo;
         global.chatDetail = data;
-        //this.props.navigation.replace('Chat');
         this.props.navigation.navigate('Chat');
     }
 

@@ -45,6 +45,7 @@ import MyProfileScreen from '../screens/employer/MyProfileScreen';
 import JobPostScreen from '../screens/employer/JobPostScreen';
 import MapScreen from '../screens/employer/MapScreen';
 import EditProfileScreen from '../screens/employer/EditProfileScreen';
+import ChaterScreen from '../screens/employer/ChaterScreen';
 
 // import SideMenuEmployeeNav from './SideMenuEmployeeNav';
 
@@ -276,6 +277,16 @@ const EditProfile = createDrawerNavigator(
     }
 );
 
+const Chater = createDrawerNavigator(
+    {       
+        ChaterScreen: {screen : ChaterScreen},
+    },  
+    {
+        contentComponent: EmployeeDrawerContent,
+        drawerWidth: deviceWidth/1.8,
+    }
+);
+
 //---------------------------------------------//
 
 
@@ -320,10 +331,11 @@ const RootStackBeforeLogIn = createStackNavigator({
     JobPost: {screen: JobPost},
     MapLocation: {screen: MapLocation},
     EditProfile: {screen: EditProfile},
+    Chater: {screen: Chater},
     
 },{
     initialRouteName: 'LoginScreen',
-    //initialRouteName: 'Message1',
+    //initialRouteName: 'CompanyPackage',
     //initialRouteName: 'RegUserInfoScreen',
     headerMode: 'none',
 })

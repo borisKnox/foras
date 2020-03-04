@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>447807123147-r01sqd6oakub28saff268mrag5ekmlhu.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.447807123147-r01sqd6oakub28saff268mrag5ekmlhu</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>447807123147-73fofdi9p9n5eo3v257j7rqt8husap08.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDsWc1srtujE0qxgu_Wf0pM9O8ak5GYuSI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>447807123147</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.reactjs.native.example.foras</string>
+	<key>PROJECT_ID</key>
+	<string>foras-260407</string>
+	<key>STORAGE_BUCKET</key>
+	<string>foras-260407.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:447807123147:ios:dfe6dece85225e493f754e</string>
+	<key>DATABASE_URL</key>
+	<string>https://foras-260407.firebaseio.com</string>
+</dict>
+</plist>

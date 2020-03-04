@@ -59,9 +59,9 @@ export default class AddSmsScreen extends React.Component {
             console.log("Is Individual? ", global.isIndividual);        
 
             if(global.isIndividual){                    
-                this.props.navigation.replace('RegUserInfoScreen');
+                this.props.navigation.replace('TutorialScreen');
             } else {
-                this.props.navigation.replace('RegCompanyScreen');
+                this.props.navigation.replace('CompanyPackage');
             }
 
         }).catch(error =>  {
