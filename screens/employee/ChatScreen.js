@@ -22,6 +22,7 @@ import firebase from 'react-native-firebase';
 import Colors from '../../constants/Colors';
 import { Labels } from '../../constants/Langs';
 import { GiftedChat } from 'react-native-gifted-chat';
+import firebaseSvc from '../../FirebaseSvc';
 
 export default class ChatScreen extends React.Component {
     constructor(props) {
@@ -34,33 +35,38 @@ export default class ChatScreen extends React.Component {
             messages: [],
         }
     }
+
+    get user() {
+        return {
+            name: global.loginInfo.name ,
+            email: global.loginInfo.email,
+            avatar: global.loginInfo.logo,
+            id: firebaseSvc.uid,
+            _id: firebaseSvc.uid,
+        };
+    }
+
     componentDidMount(){
         // console.log( (this.props.navigation || {}).data );
         //console.log(global.chatDetail);
         this.setState({
             senderName: global.chatDetail.sender.name,
             jobID: global.chatDetail.job_id,
-            jobTitle: global.chatDetail.subject,
-            messages: [
-              {
-                _id: 1,
-                text: 'Hello developer',
-                createdAt: new Date(),
-                user: {
-                  _id: 2,
-                  name: 'React Native',
-                  avatar: 'https://placeimg.com/140/140/any',
-                },
-              },
-            ],
+            jobTitle: global.chatDetail.subject
         });
+
+        firebaseSvc.refOn(message => 
+            this.setState(previousState => ({
+              messages: GiftedChat.append(previousState.messages, message),
+              })
+            )
+          );
         
     }
-    onSend(messages = []) {
-        this.setState(previousState => ({
-          messages: GiftedChat.append(previousState.messages, messages),
-        }))
-      }
+    componentWillUnmount() {
+        firebaseSvc.refOff();
+    }
+
     goJobDetail(jobID) {
         this.setState({spinner: true});
         this.props.navigation.replace('JobDetail1');
@@ -94,11 +100,12 @@ export default class ChatScreen extends React.Component {
                 </Header>
             </Container>
             <GiftedChat
+                placeholder="اكتب رسالة"
+                isTyping="true"
+                alwaysShowSend="true"
                 messages={this.state.messages}
-                onSend={messages => this.onSend(messages)}
-                user={{
-                _id: 1,
-                }}
+                onSend={firebaseSvc.send}
+                user={this.user}
             />
         </View>
         );
