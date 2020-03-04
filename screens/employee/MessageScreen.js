@@ -139,7 +139,7 @@ export default class MessageScreen extends React.Component {
         global.detailLogo = data.sender.logo;
         global.chatDetail = data;
         //this.props.navigation.replace('Chat');
-        this.props.navigation.replace('Chat', { data: data });
+        this.props.navigation.navigate('Chat');
     }
 
     render() {
