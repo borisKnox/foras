@@ -93,8 +93,9 @@ export default class ChaterScreen extends React.Component {
                 text: obj.text,
                 message: obj.text,
                 subject: 'real message',
-                sender: { sender_id: global.loginInfo.api_token,
+                sender: { api_token: global.loginInfo.api_token,
                         name: global.loginInfo.name,
+                        logo: global.loginInfo.logo,
                     }
               }];
               console.log('receiver id===>',message);

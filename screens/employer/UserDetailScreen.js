@@ -218,8 +218,9 @@ export default class UserDetailScreen extends React.Component {
             this.setState({spinner: true});
 
             const sender = {
-                sender_id: global.token,
-                name: global.loginInfo.name
+                api_token: global.token,
+                name: global.loginInfo.name,
+                logo: global.loginInfo.logo
             }
             const message = [{
                 sender_id: global.token,

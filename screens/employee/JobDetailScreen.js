@@ -290,8 +290,9 @@ export default class JobDetailScreen extends React.Component {
 
             this.setState({spinner: true});               
             const sender = {
-                sender_id: global.token,
-                name: global.loginInfo.name
+                api_token: global.token,
+                name: global.loginInfo.name,
+                logo: global.loginInfo.log,
             }
             const message = [{
                 sender_id: global.token,

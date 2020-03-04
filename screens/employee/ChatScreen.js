@@ -83,8 +83,9 @@ export default class ChatScreen extends React.Component {
                 text: obj.text,
                 message: obj.text,
                 subject: 'real message',
-                sender: { sender_id : global.loginInfo.api_token,
+                sender: { api_token : global.loginInfo.api_token,
                         name: global.loginInfo.name,
+                        logo: global.loginInfo.log,
                     }
               }];
               console.log('receiver id===>',message);
@@ -109,9 +110,6 @@ export default class ChatScreen extends React.Component {
                     <Left style={{flex: 1}}>
                         <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
                             <Image source={require('../../assets/images/sidemenu/icon-sidemenu.png')} style={{ width: 18, height: 16, marginLeft: 12 }}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
-                            <Text></Text>
                         </TouchableOpacity>
                     </Left>
                     <Body style={styles.headerBody }>
