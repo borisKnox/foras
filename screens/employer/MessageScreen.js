@@ -141,7 +141,11 @@ export default class MessageScreen extends React.Component {
         global.userDetailId = data.sender.id;
         global.detailLogo = data.sender.logo;
         global.job_id = data.job_id;
-        this.props.navigation.replace('UserDetail');
+        console.log(data);
+        // global.jobDetailId = data.job_id;
+        // global.detailLogo = data.sender.logo;
+        global.chatDetail = data;
+        this.props.navigation.navigate('Chater');
     }
 
     render() {
