@@ -168,10 +168,16 @@ android {
         // }
 
         release {
-             storeFile file('release_key.keystore')
-                storePassword '123456'
-                keyAlias 'release_key'
-                keyPassword '123456'
+            //  storeFile file('release_key.keystore')
+            //     storePassword 'dnflsmsgksk112'
+            //     keyAlias 'release_key'
+            //     keyPassword 'dnflsmsgksk112'
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
         }
     }
     buildTypes {
