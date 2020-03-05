@@ -11,7 +11,8 @@ import {
   View,
   Dimensions,
   TextInput,
-  I18nManager,  
+  I18nManager,
+  AsyncStorage  
 } from 'react-native';
 
 import MapView from 'react-native-maps';
@@ -20,6 +21,7 @@ import Dash from 'react-native-dash';
 import Spinner from 'react-native-loading-spinner-overlay';
 import RNPickerSelect from 'react-native-picker-select';
 import { Triangle } from 'react-native-shapes';
+import firebase from 'react-native-firebase';
 import api from '../../constants/api';
 import {LoginData} from '../../constants/Constants';
 import Colors from '../../constants/Colors';
@@ -106,7 +108,7 @@ export default class MainScreen extends React.Component {
         title: 'Welcome',
     };
 
-    componentDidMount(){     
+    async componentDidMount(){     
         console.log("============login Data============",LoginData )
         var region  = {
             latitude: Number(LoginData.latitude),
@@ -140,8 +142,155 @@ export default class MainScreen extends React.Component {
         .catch((error) => {
             console.log(error);
         })
-    }
 
+        //---------------Notification----------------//
+        AsyncStorage.removeItem('fcmToken')
+
+        let fcmToken = await AsyncStorage.getItem('fcmToken');
+        console.log("fcmToken_from_AsyncStorage==="+ fcmToken);
+        
+        if (fcmToken) {
+            console.log("===fcmToken  exist===");
+            
+        }else{
+            console.log("===fcmToken doesn't exist===");
+            this.checkPermission();
+        }
+        this.createNotificationListeners(); 
+    }
+//------------------------NOtification---------------------//
+componentWillUnmount() {
+    // this.onTokenRefreshListener();
+    this.notificationListener;
+    this.notificationOpenedListener;
+}
+
+//1
+async checkPermission() {
+    const enabled = await firebase.messaging().hasPermission();
+    if (enabled) {
+    this.getToken();
+    } else {
+    this.requestPermission();
+    }
+}
+
+//2
+async requestPermission() {
+    try {
+    await firebase.messaging().requestPermission();
+    // User has authorised
+    this.getToken();
+    } catch (error) {
+    // User has rejected permissions
+    console.log('permission rejected');
+    }
+}
+
+//3
+async getToken() {
+    var fcmToken = await firebase.messaging().getToken();
+    console.log('fcmToken:', fcmToken);
+    await AsyncStorage.setItem('fcmToken', fcmToken);
+    // Share.share({
+    //     message: fcmToken
+    // })
+    // this.register_deviceToken(fcmToken);
+}
+
+async createNotificationListeners() {
+
+    /*
+    * Triggered when a particular notification has been received in foreground
+    * */
+    const channel = new firebase.notifications.Android.Channel('fcm_default_channel', 'Demo app name', firebase.notifications.Android.Importance.High)
+    .setDescription('Demo app description')
+    .setSound('sampleaudio.mp3');
+
+    firebase.notifications().android.createChannel(channel);
+
+    this.notificationListener = firebase.notifications().onNotification((notification) => {
+        const { title, body } = notification; 
+        if(Platform.OS === 'android'){
+            const localNotification = new firebase.notifications.Notification({
+                sound: 'default',
+                show_in_foreground: true,
+            })
+            .setNotificationId(notification.notificationId)
+            .setTitle(notification.title)
+            .setSubtitle(notification.subtitle)
+            .setBody(notification.body)
+            .setData(notification.data)
+            .android.setChannelId('fcm_default_channel') // e.g. the id you chose above
+            .android.setSmallIcon('@drawable/ic_launcher') // create this icon in Android Studio
+            .android.setColor('#000000') // you can set a color here
+            .android.setPriority(firebase.notifications.Android.Priority.High)
+            .android.setAutoCancel(true); // To remove notification when tapped on it
+
+            firebase.notifications()
+                .displayNotification(localNotification)
+                .catch(err => console.error(err));
+        } else if (Platform.OS === 'ios') {
+
+            const localNotification = new firebase.notifications.Notification()
+              .setNotificationId(notification.notificationId)
+              .setTitle(notification.title)
+              .setSubtitle(notification.subtitle)
+              .setBody(notification.body)
+              .setData(notification.data)
+              .ios.setBadge(notification.ios.badge);
+    
+            firebase.notifications()
+              .displayNotification(localNotification)
+              .catch(err => console.error(err));
+    
+          }
+    });
+
+    /*
+    * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
+    * */
+    this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
+        const { title, body } = notificationOpen.notification;
+        console.log('onNotificationOpened:');
+        
+        this.props.navigation.replace('Notification');
+    });
+
+    /*
+    * If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
+    * */
+    const notificationOpen = await firebase.notifications().getInitialNotification();
+   
+    if (notificationOpen) {
+        const { title, body } = notificationOpen.notification;
+    }
+    /*
+    * Triggered for data only payload in foreground
+    * */
+    this.messageListener = firebase.messaging().onMessage((message) => {
+        var text=JSON.stringify(message);
+        var text1 = JSON.parse(text)._data.gcm_message;
+        var text2=JSON.parse(text1).title;
+        var text3=JSON.parse(text1).body;
+    
+    
+        console.log(JSON.stringify(message));
+        const notification = new firebase.notifications.Notification()
+        .setNotificationId('notificationId')
+        .setTitle(text2)
+        .setBody(text3)
+        .setData({
+            key1: 'value1',
+            key2: 'value2',
+        });
+        notification
+        .android.setChannelId('channelId')
+        .android.setSmallIcon('ic_launcher');
+        firebase.notifications().displayNotification(notification);
+    });
+}
+//------------------Notification End---------------//
     toggleFitlerModal = () => {
         this.setState({ isFilterModalVisible: !this.state.isFilterModalVisible });
     };

@@ -33,6 +33,7 @@ export default class ChaterScreen extends React.Component {
             jobID: '',
             jobTitle: '',
             messages: [],
+            award: 'Award',
         }
     }
 
@@ -42,29 +43,28 @@ export default class ChaterScreen extends React.Component {
             jobID: global.chatDetail.job_id,
             jobTitle: global.chatDetail.subject
         });
-        console.log('dddddddddd',global.chatDetail);
-        // firebaseSvc.refOn(message => 
-        //     this.setState(previousState => ({
-        //       messages: GiftedChat.append(previousState.messages, message),
-        //       })
-        //     )
-        // );
-        if (global.chatDetail!=this.state.messages) {
+        firebaseSvc.refOn(message => 
+            this.setState(previousState => ({
+              messages: GiftedChat.append(previousState.messages, message),
+              })
+            )
+        );
+        // if (global.chatDetail!=this.state.messages) {
   
-            console.log("global.chatDetail===>",global.chatDetail);
+        //     console.log("global.chatDetail===>",global.chatDetail);
             
-            this.state.messages=[];
-            this.setState({messages: this.state.messages});
+        //     this.state.messages=[];
+        //     this.setState({messages: this.state.messages});
     
-            firebaseSvc.ref.on("child_added", function(snapshot) {
+        //     firebaseSvc.ref.on("child_added", function(snapshot) {
               
-              if(snapshot.child('sender_id').val() == global.chatDetail.sender_id && snapshot.child('receiver_id').val() == global.loginInfo.api_token || 
-              snapshot.child('receiver_id').val() == global.chatDetail.sender_id && snapshot.child('sender_id').val() == global.loginInfo.api_token ){
-                this.state.messages.unshift(snapshot.val());
-              }         
-              this.setState({messages: this.state.messages});
-              }, this);
-        }     
+        //       if(snapshot.child('sender_id').val() == global.chatDetail.sender_id && snapshot.child('receiver_id').val() == global.loginInfo.api_token || 
+        //       snapshot.child('receiver_id').val() == global.chatDetail.sender_id && snapshot.child('sender_id').val() == global.loginInfo.api_token ){
+        //         this.state.messages.unshift(snapshot.val());
+        //       }         
+        //       this.setState({messages: this.state.messages});
+        //       }, this);
+        // }     
     }
 
     componentWillUnmount() {
@@ -77,6 +77,7 @@ export default class ChaterScreen extends React.Component {
     }
 
     onClickAward(jobID){
+        this.setState({award: "Awarded"});
         alert("Offer is completed");
     }
 
@@ -96,7 +97,8 @@ export default class ChaterScreen extends React.Component {
                 sender: { api_token: global.loginInfo.api_token,
                         name: global.loginInfo.name,
                         logo: global.loginInfo.logo,
-                    }
+                    },
+                type: 'common'
               }];
               console.log('receiver id===>',message);
               firebaseSvc.send(message);
@@ -120,7 +122,7 @@ export default class ChaterScreen extends React.Component {
                             <Text>{this.state.jobTitle}</Text>
                         </TouchableOpacity> */}
                         <TouchableOpacity onPress={() => this.onClickAward(this.state.jobID)}>
-                            <Text>Award</Text>
+                            <Text>{this.state.award}</Text>
                         </TouchableOpacity>
                     </Body>
                     <Right style={{flex: 1}}>

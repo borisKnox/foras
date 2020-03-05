@@ -60,14 +60,14 @@ class Item extends React.Component{
                         <Text style={styles.messageTitle1}>{this.props.item.subject}</Text>
                         <Text style={styles.name}>{this.props.item.sender.name}</Text>
                         <Text style={styles.messageContent}>{this.props.item.message}</Text>                    
-                        <Text style={styles.messageTime}>{this.props.item.created_at}</Text>
+                        <Text style={styles.messageTime}>{new Date(parseInt(this.props.item.created_at)).toUTCString()}</Text>
                     </TouchableOpacity>
                     :
                     <TouchableOpacity style={styles.messageTextContainer} onPress={() => this.onSelect(this.props.item)}>
                         {/* <Text style={styles.messageTitle}>{this.props.item.subject}</Text> */}
                         <Text style={styles.name}>{this.props.item.sender.name}</Text>
                         <Text style={styles.messageContent}>{this.props.item.message}</Text>                    
-                        <Text style={styles.messageTime}>{this.props.item.created_at}</Text>
+                        <Text style={styles.messageTime}>{new Date(parseInt(this.props.item.created_at)).toUTCString()}</Text>
                     </TouchableOpacity>
                 }
             </View>
@@ -123,16 +123,16 @@ export default class MessageScreen extends React.Component {
     }
 
     onSelect = (item) => {
-        // global.favoriteIndividualStatus = false
+        global.favoriteIndividualStatus = false
 
-        // this.state.favoriteIndividualsList.map((datas, index)=>{
-        //     if(datas.individual_id == item.sender_id){
-        //         global.favoriteIndividualStatus = true;                
-        //     }
-        // })
-        // global.userDetailId = item.sender_id;
-        // global.detailLogo = item.sender.logo;
-        // global.job_id = item.job_id;
+        this.state.favoriteIndividualsList.map((datas, index)=>{
+            if(datas.individual_id == item.sender_id){
+                global.favoriteIndividualStatus = true;                
+            }
+        })
+        global.userDetailId = item.sender_id;
+        global.detailLogo = item.sender.logo;
+        global.job_id = item.job_id;
         global.chatDetail = item;
         this.props.navigation.navigate('Chater');
     }

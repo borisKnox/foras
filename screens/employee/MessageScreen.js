@@ -46,6 +46,7 @@ class Item extends React.Component{
 
     onSelect = (data) => {
         this.props.onSelect(data);
+        
     };
 
     render(){
@@ -59,14 +60,14 @@ class Item extends React.Component{
                         <Text style={styles.messageTitle1}>{this.props.item.subject}</Text>
                         <Text style={styles.name}>{this.props.item.sender.name}</Text>
                         <Text style={styles.messageContent}>{this.props.item.message}</Text>                    
-                        <Text style={styles.messageTime}>{this.props.item.created_at}</Text>
+                        <Text style={styles.messageTime}>{new Date(parseInt(this.props.item.created_at)).toUTCString()}</Text>
                     </TouchableOpacity>
                     :
                     <TouchableOpacity style={styles.messageTextContainer} onPress={() => this.onSelect(this.props.item)}>
                         {/* <Text style={styles.messageTitle}>{this.props.item.subject}</Text> */}
                         <Text style={styles.name}>{this.props.item.sender.name}</Text>
                         <Text style={styles.messageContent}>{this.props.item.message}</Text>                    
-                        <Text style={styles.messageTime}>{this.props.item.created_at}</Text>
+                        <Text style={styles.messageTime}>{new Date(parseInt(this.props.item.created_at)).toUTCString()}</Text>
                     </TouchableOpacity>
                 }
             </View>
@@ -91,7 +92,7 @@ export default class MessageScreen extends React.Component {
         let senderid = [];
         firebaseSvc.ref.orderByChild('receiver_id').equalTo(global.token).on("child_added", function(snapshot) {
             if(senderid.indexOf(snapshot.val().sender_id) == -1){
-                this.state.messageData.push(snapshot.val());
+                this.state.messageData.unshift(snapshot.val());
                 this.setState({messageData: this.state.messageData, newmsg: true});
                 senderid.push(snapshot.val().sender_id);
             }
@@ -120,17 +121,16 @@ export default class MessageScreen extends React.Component {
     }
 
     onSelect = (data) => {
-        console.log(this.state.messageData);
-        // global.favoriteJobStatus = false;
-        // this.state.favoriteJobs.map((datas, index)=>{
-        //     if(data.job_id == datas.job_id){
-        //         global.favoriteJobStatus = true;
-        //     }
-        // })
-        // global.jobDetailId = data.job_id;
-        // global.detailLogo = data.sender.logo;
+        global.favoriteJobStatus = false;
+        this.state.favoriteJobs.map((datas, index)=>{
+            if(data.job_id == datas.job_id){
+                global.favoriteJobStatus = true;
+            }
+        })
+        global.jobDetailId = data.job_id;
+        global.detailLogo = data.sender.logo;
         global.chatDetail = data;
-        this.props.navigation.navigate('Chat');
+        this.props.navigation.navigate('Chat', {datadata: data});
     }
 
     render() {

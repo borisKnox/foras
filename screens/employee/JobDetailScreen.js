@@ -251,27 +251,44 @@ export default class JobDetailScreen extends React.Component {
 
         if(this.state.message){
             this.setState({spinner: true});               
+            const sender = {
+                api_token: global.token,
+                name: global.loginInfo.name,
+                logo: global.loginInfo.logo,
+            };
+            const message = [{
+                sender_id: global.token,
+                receiver_id: global.userDetailApiToken,
+                text: this.state.message,
+                message: this.state.message,
+                subject: 'Common Message',
+                sender: sender,
+                type: 'common'
+            }];
 
-            api.sendMessages(global.token, this.state.jobDetailData.job.users.id,  this.state.message, "Common Message", "common").then((res)=>{
-                console.log('sendMessage response____', res);  
-                if(res.status == 200){
-                    this.setState({spinner: false});               
-                    Toast.show(Labels.sendMessageSuccessTxt);
+            firebaseSvc.send(message);
+            this.setState({spinner: false});
+            Toast.show("تم إرسال الرسالة بنجاح");
+            // api.sendMessages(global.token, this.state.jobDetailData.job.users.id,  this.state.message, "Common Message", "common").then((res)=>{
+            //     console.log('sendMessage response____', res);  
+            //     if(res.status == 200){
+            //         this.setState({spinner: false});               
+            //         Toast.show(Labels.sendMessageSuccessTxt);
                     
-                }else{
-                    Alert.alert(
-                        'Error!',
-                        res.errors,
-                        [
-                            {text: 'OK', onPress: () =>  this.setState({spinner: false})},
-                        ],
-                        {cancelable: false},
-                    );
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+            //     }else{
+            //         Alert.alert(
+            //             'Error!',
+            //             res.errors,
+            //             [
+            //                 {text: 'OK', onPress: () =>  this.setState({spinner: false})},
+            //             ],
+            //             {cancelable: false},
+            //         );
+            //     }
+            // })
+            // .catch((error) => {
+            //     console.log(error);
+            // })
         }else{
             Toast.show("Pleae fill the message text");
         }
@@ -292,40 +309,41 @@ export default class JobDetailScreen extends React.Component {
             const sender = {
                 api_token: global.token,
                 name: global.loginInfo.name,
-                logo: global.loginInfo.log,
-            }
+                logo: global.loginInfo.logo,
+            };
             const message = [{
                 sender_id: global.token,
                 receiver_id: global.userDetailApiToken,
                 text: this.state.applyJobMessage,
                 message: this.state.applyJobMessage,
                 subject: 'Apply Job Message',
-                sender: sender
+                sender: sender,
+                type: 'apply_job'
             }];
 
             firebaseSvc.send(message);
             this.setState({spinner: false});
-            Toast.show("Message Sent Successfully");
-            // api.sendMessages(global.token, this.state.jobDetailData.job.users.id, this.state.jobDetailData.job.id, this.state.applyJobMessage, "Apply Job Message", "apply_job").then((res)=>{
-            //     console.log('sendMessage response____', res);  
-            //     if(res.status == 200){
-            //         this.setState({spinner: false});               
-            //         Toast.show(Labels.sendMessageSuccessTxt);
+            Toast.show("تم إرسال الرسالة بنجاح");
+            api.sendMessages(global.token, this.state.jobDetailData.job.users.id, this.state.jobDetailData.job.id, this.state.applyJobMessage, "Apply Job Message", "apply_job").then((res)=>{
+                console.log('sendMessage response____', res);  
+                if(res.status == 200){
+                    //this.setState({spinner: false});               
+                    //Toast.show(Labels.sendMessageSuccessTxt);
                     
-            //     }else{
-            //         Alert.alert(
-            //             'Error!',
-            //             res.errors,
-            //             [
-            //                 {text: 'OK', onPress: () =>  this.setState({spinner: false})},
-            //             ],
-            //             {cancelable: false},
-            //         );
-            //     }
-            // })
-            // .catch((error) => {
-            //     console.log(error);
-            // })
+                }else{
+                    Alert.alert(
+                        'Error!',
+                        res.errors,
+                        [
+                            {text: 'OK', onPress: () =>  this.setState({spinner: false})},
+                        ],
+                        {cancelable: false},
+                    );
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
         }else{
             Toast.show("Pleae fill the message text");
         }

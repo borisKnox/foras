@@ -179,12 +179,30 @@ export default class UserDetailScreen extends React.Component {
 
         if(this.state.message){
             this.setState({spinner: true});               
+            const sender = {
+                api_token: global.token,
+                name: global.loginInfo.name,
+                logo: global.loginInfo.logo,
+            };
+            const message = [{
+                sender_id: global.token,
+                receiver_id: global.userDetailApiToken,
+                text: this.state.message,
+                message: this.state.message,
+                subject: 'Common Message',
+                sender: sender,
+                type: 'common'
+            }];
+
+            firebaseSvc.send(message);
+            this.setState({spinner: false});
+            Toast.show("تم إرسال الرسالة بنجاح");
 
             api.sendMessages(global.token, global.userDetailId, this.state.message, "Common Message", "common").then((res)=>{
                 console.log('sendMessage response____', res);  
                 if(res.status == 200){
-                    this.setState({spinner: false});               
-                    Toast.show(Labels.sendMessageSuccessTxt);
+                    //this.setState({spinner: false});               
+                    //Toast.show(Labels.sendMessageSuccessTxt);
                     
                 }else{
                     Alert.alert(
@@ -220,20 +238,21 @@ export default class UserDetailScreen extends React.Component {
             const sender = {
                 api_token: global.token,
                 name: global.loginInfo.name,
-                logo: global.loginInfo.logo
-            }
+                logo: global.loginInfo.logo,
+            };
             const message = [{
                 sender_id: global.token,
                 receiver_id: global.userDetailApiToken,
                 text: this.state.offerJobMessage,
                 message: this.state.offerJobMessage,
                 subject: 'Offer Job Message',
-                sender: sender
+                sender: sender,
+                type: 'offer_job'
             }];
 
             firebaseSvc.send(message);
             this.setState({spinner: false});
-            Toast.show("Message Sent Successfully");
+            Toast.show("تم إرسال الرسالة بنجاح");
             // api.sendMessages(global.token, global.userDetailId, global.job_id, this.state.offerJobMessage, "Offer Job Message", "offer_job").then((res)=>{
             //     console.log('sendMessage response____', res);  
             //     if(res.status == 200){
