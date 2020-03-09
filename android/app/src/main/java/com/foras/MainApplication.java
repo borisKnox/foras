@@ -7,6 +7,7 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.facebook.react.modules.i18nmanager.I18nUtil;//knox addd
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
@@ -60,6 +61,9 @@ public class MainApplication extends Application implements ReactApplication {
     // FacebookSdk.sdkInitialize(getApplicationContext());
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this); // Remove this line if you don't want Flipper enabled
+    I18nUtil sharedI18nUtilInstance = I18nUtil.getInstance();
+    sharedI18nUtilInstance.forceRTL(this,true);
+    sharedI18nUtilInstance.allowRTL(this, true);
   }
 
   /**
