@@ -10,6 +10,7 @@
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#import <React/RCTI18nUtil.h>
 
 #import <GoogleMaps/GoogleMaps.h>
 #import <RNGoogleSignin/RNGoogleSignin.h>
@@ -34,6 +35,8 @@
   [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
   
   [GMSServices provideAPIKey:@"AIzaSyA6ncFciLkhZc8Zsjt-WuJSbZIF_3nS74A"]; // add this line using the api key obtained from Google Console
+  [[RCTI18nUtil sharedInstance] allowRTL:YES];
+  [[RCTI18nUtil sharedInstance] forceRTL:YES];
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   
   [FIRApp configure];
