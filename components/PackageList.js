@@ -109,16 +109,16 @@ export default class PackageList extends Component {
                         </View>
                         <View style = {this.state.detailsBox}>
                             <Text style = {item.id == value? this.state.textPress: this.state.text}>
+                                <Image source={checkIconUri}/>
                                 الاتصال {item.contactCount} مرشحا مباشرة
-                                <Image source={checkIconUri}/>
                             </Text>
                             <Text style = {item.id == value? this.state.textPress: this.state.text}>
+                                <Image source={checkIconUri}/>
                                 يمكنك نشر {item.postCount} وظائف.
-                                <Image source={checkIconUri}/>
                             </Text>
                             <Text style = {item.id == value? this.state.textPress: this.state.text}>
+                            <Image source={checkIconUri}/>  
                             البحث المتقدم عن السير الذاتية
-                                <Image source={checkIconUri}/>
                             </Text>
                         </View>
                 </TouchableOpacity>  
