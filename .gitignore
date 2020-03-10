@@ -59,3 +59,10 @@ buck-out/
 /ios/Pods/
 android/app/google-services.json
 android/app/google-services.json
+android/app/google-services-dev.json
+android/app/google-services-dev.json
+android/app/google-services-orig.json
+ios/foras/GoogleService-Info.plist
+ios/foras/GoogleService-Info.plist
+ios/foras/GoogleService-Info.plist
+ios/foras/GoogleService-Info-dev.plist
