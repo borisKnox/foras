@@ -220,7 +220,7 @@ export default class JobListScreen extends React.Component {
     }
 
     onGoJobListScreen() {
-        this.props.navigation.navigate('Main');
+        this.props.navigation.navigate('Main1');
     }
 
     toggleWorkdaysModal = () => {
@@ -230,11 +230,11 @@ export default class JobListScreen extends React.Component {
 
 
     onSelect = (index) => {
-        // console.log('===>>>>', this.state.newJobList[index]);
-        global.jobDetailId = this.state.newJobList[index].job_id;
-        global.userDetailApiToken = this.state.newJobList[index].api_token;
+        console.log('===>>>>', index);
+        global.jobDetailId = this.state.newJobList[index].job_id;//job id
+        global.userDetailApiToken = this.state.newJobList[index].api_token;// client token
         global.favoriteJobStatus = this.state.newJobList[index].favoriteStatus;
-        global.detailLogo = this.state.newJobList[index].logo;
+        global.detailLogo = this.state.newJobList[index].logo;//client logo
         this.props.navigation.replace('JobDetail1');
     }
 

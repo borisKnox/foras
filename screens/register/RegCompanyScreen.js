@@ -123,8 +123,8 @@ export default class RegCompanyScreen extends React.Component {
                 this.setState({spinner: false});
                 
                 global.loginInfo = res.data;
-
-                this.props.navigation.replace('AddPhoneNumberScreen');                           
+				this.props.navigation.replace('CompanyPackage'); 
+                //this.props.navigation.replace('AddPhoneNumberScreen');                           
             }else{
                 Alert.alert(
                     '',

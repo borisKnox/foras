@@ -57,10 +57,10 @@ export default class HeaderScreen extends React.Component {
                     </Body>
                     <Right style={{flex: 1}}>
                         <View style={{flexDirection: 'row'}}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('NotificationScreen')}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Notification')}>
                                 <Image source = { require('../../assets/images/sidemenu/icon-menu-bell.png') }style={{ width: 19, height: 18, marginRight: 16, marginTop: -2, resizeMode: 'stretch' }} />
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('MessageScreen')}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Message')}>
                                 <Image source = { require('../../assets/images/sidemenu/icon-menu-mail.png') }style={{ width: 20, height: 16, marginRight: 14, resizeMode: 'stretch' }} />
                             </TouchableOpacity>
                         </View>

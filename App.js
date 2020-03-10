@@ -1,6 +1,6 @@
 import 'core-js'
 import React, { useState , useEffect, Component } from 'react';
-import { Platform, StatusBar, StyleSheet, View, AsyncStorage } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, AsyncStorage,I18nManager } from 'react-native';
 
 
 import AppNavigator from './navigation/AppNavigator';
@@ -12,7 +12,7 @@ export default function App(props) {
   // componentDidMount() {
   //   console.log("==========didMount of App. js================")
   // }
-
+  I18nManager.forceRTL(true);
   const API_KEY = "d92fc707c0ae46298a601742a7a33b7c";
   const URL = 'https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=${API_KEY}';
   const [articles, setArticles] = useState([]);

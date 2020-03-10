@@ -282,7 +282,7 @@ const Chater = createDrawerNavigator(
         ChaterScreen: {screen : ChaterScreen},
     },  
     {
-        contentComponent: EmployeeDrawerContent,
+        contentComponent: EmployerDrawerContent,
         drawerWidth: deviceWidth/1.8,
     }
 );

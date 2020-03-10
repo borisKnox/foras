@@ -233,7 +233,7 @@ export default class UserListScreen extends React.Component {
         global.favoriteIndividualStatus = this.state.newIndividualList[index].favoriteStatus;
         global.detailLogo = this.state.newIndividualList[index].logo;
 
-        this.props.navigation.navigate('UserDetail');
+        this.props.navigation.replace('UserDetail');
     }
 
     sort(sortCategory){
@@ -518,6 +518,8 @@ const styles = StyleSheet.create({
       
         width: '100%',
     },
+
+
 
     bottomButtonPart: {
         position: 'absolute',

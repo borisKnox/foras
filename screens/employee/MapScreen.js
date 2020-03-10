@@ -32,14 +32,15 @@ export default class MapScreen extends React.Component {
         this.state = {            
             region: {},
             individualsList: [],
-            spinner: false,          
+            spinner: false,
+            companyDetail: global.companyDetailData,     
         }
     }
 
     componentDidMount(){ 
         var region  = {
-            latitude: Number(global.selectLatitude),
-            longitude: Number(global.selectLongitude),       
+            latitude: Number(global.companyDetailData.user.latitude),
+            longitude: Number(global.companyDetailData.user.longitude),       
             latitudeDelta: 5.00864195044303443,
             longitudeDelta: 5.000142817690068,             
         }
@@ -86,16 +87,30 @@ export default class MapScreen extends React.Component {
                             >
                                 <MapView.Marker
                                     // onPress={() => this.goToJobDetail(data)}
-                                    coordinate={{ latitude: Number(global.selectLatitude), longitude: Number(global.selectLongitude)}}>
+                                    coordinate={{ latitude: Number(global.companyDetailData.user.latitude), longitude:Number(global.companyDetailData.user.longitude)}}>
                                         <View style={styles.markerBg}>                                            
                                             <Image source={require('../../assets/images/marker_otherPosition.png')}   style={styles.mapmarker} />
                                         </View> 
+                                        <MapView.Callout tooltip style={{width: 140,}}>
+                                            <View style={{flexDirection: 'column',alignSelf: 'flex-start',}}>
+                                                <TouchableOpacity underlayColor='transparent'>
+                                                    <View style={{backgroundColor:'white', borderColor: 'red',borderRadius: 6,borderWidth: 0.5,}}>
+                                                        <View style={{}}>
+                                                            <Text numberOfLines={2} ellipsizeMode={'tail'}>{global.companyDetailData.user.name}</Text>
+                                                            <Text>{global.companyDetailData.user.about_me}sdafasfsdafasdfsdafsdfd</Text>
+                                                        </View>
+                                                    </View>
+                                                </TouchableOpacity>
+                                                <View style={styles.arrowBorder} />
+                                                <View style={styles.arrow} />
+                                            </View>
+                                        </MapView.Callout>
                                 </MapView.Marker>                        
                             </MapView>
                         </View>
                         
                         <View style={styles.bottomButtonPart}>
-                            <TouchableOpacity style= {styles.bottomListButton} onPress={() => this.onGoUserListScreen()} >
+                            <TouchableOpacity style= {styles.bottomListButton} onPress={() => this.onGoJobListScreen()} >
                                 <Image source={require('../../assets/images/maps/icon-bottom-list.png')} style={styles.buttonIcon}/>
                                 <Text style= {styles.buttonListText} >
                                     {Labels._bottom_button_company}

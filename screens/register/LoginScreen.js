@@ -51,12 +51,18 @@ export default class LoginScreen extends React.Component {
         this.state = {
             email: 'Corporate1@gmail.com',
             //email: 'Individual@gmail.com',
-            //email: 'Corporasasaate1122@gmail.com',
             password: '12345678',
             userName: 'UserName111',
             register_email: 'Corporate1122@gmail.com',
             register_password: '123456',
             c_password: '123456',
+
+            // email: '',
+            // password: '',
+            // userName: '',
+            // register_email: '',
+            // register_password: '',
+            // c_password: '',
             
             pwShow_login: true,
             pwShow_register: true,
@@ -590,6 +596,16 @@ export default class LoginScreen extends React.Component {
                             AsyncStorage.setItem('user_key', JSON.stringify(LoginData));
                             this.onFirebaseCreateAccountForChat();
                             this.onFirebaseLoginForChat();
+
+                            api.verifyEmail(global.token).then((res) => {
+                                if(res.status == 200){
+
+                                } else{
+                                    console.log("verify email api response", res);
+                                }
+                            }).catch((error) => {
+                                console.log(error);    
+                            })
                             this.props.navigation.navigate('EmailVerificationScreen');
                             //this.props.navigation.navigate('CompanyPackage');
                         }else{

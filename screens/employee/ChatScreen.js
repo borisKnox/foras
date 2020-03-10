@@ -33,72 +33,70 @@ export default class ChatScreen extends React.Component {
             jobID: '',
             jobTitle: '',
             messages: [],
-            accpet:'Accept'
+            accpet: 'Accept',
+            reject: 'Reject'
         }
     }
     componentDidMount(){
         this.setState({
             senderName: global.chatDetail.sender.name,
-            jobID: global.chatDetail.job_id,
+            jobID: global.jobDetailId,
             jobTitle: global.chatDetail.subject
         });
-        firebaseSvc.refOn(message =>
-            this.setState(previousState => ({
-              messages: GiftedChat.append(previousState.messages, message),
-            }))
-          );
-        // if (global.chatDetail!=this.state.messages) {
-  
-        //     console.log("global.chatDetail===>",global.chatDetail);
-            
-        //     this.state.messages=[];
-        //     this.setState({messages: this.state.messages});
-    
-        //     firebaseSvc.ref.on("child_added", function(snapshot) {
-              
-        //       if(snapshot.child('sender_id').val() == global.chatDetail.sender_id && snapshot.child('receiver_id').val() == global.loginInfo.api_token || 
-        //       snapshot.child('receiver_id').val() == global.chatDetail.sender_id && snapshot.child('sender_id').val() == global.loginInfo.api_token ){
-        //         this.state.messages.unshift(snapshot.val());
-        //       }         
-        //       this.setState({messages: this.state.messages});
-        //       }, this);
-        // }
+        console.log("++++++++++++++++++++++++",global.offerMessage);
+        firebaseSvc.refOn(global.chatDetail, message => {
+                if(message.subject == 'Offer Job Message'){
+                    global.offerMessage = 1;
+                } else {
+                    global.offerMessage = 0;
+                }
+                this.setState(previousState => ({
+                    messages: GiftedChat.append(previousState.messages, message),
+                    direction: global.chatDetail.meta.direction,
+                    offer: global.chatDetail.subject
+                })) 
+            }
+        );
     }
     componentWillUnmount() {
         firebaseSvc.refOff();
     }
-    get user() {
-        return {
-          name: this.props.navigation.state.params.name,
-          email: this.props.navigation.state.params.email,
-          avatar: this.props.navigation.state.params.avatar,
-          id: firebaseSvc.uid,
-          _id: firebaseSvc.uid, // need for gifted-chat
-        };
-    }
-    sendMsg = (msg) => {
 
+    sendMsg = (msg) => {      
+        const sender = {name : global.loginInfo.name, api_token : global.token, logo : global.loginInfo.logo};
         let message = [];
-        
         msg.map((obj, index) =>
             {
+              
               message = [{
-                sender_id: global.loginInfo.api_token,
-                receiver_id: global.chatDetail.sender_id,
-                // message: this.state.message,
+                sender_id: global.senderID,
+                receiver_id: global.receiverID,
                 text: obj.text,
                 message: obj.text,
                 subject: 'real message',
-                sender: { api_token : global.loginInfo.api_token,
-                        name: global.loginInfo.name,
-                        logo: global.loginInfo.logo,
-                    },
-                type: 'common'
-              }];
-              console.log('receiver id===>',message);
-              firebaseSvc.send(message);
-            }
-        )
+                sender: sender,
+                id: this.state.jobID,
+                user: {
+                  id: sender.api_token,
+                  name: sender.name,
+                  avatar: sender.logo ? sender.logo : profile,
+                },
+                meta: {
+                    received: true,
+                    direction: true
+                }
+              }];                           
+            }            
+        );
+        firebaseSvc.send(message);
+    }
+    get user() {
+        const senduser = {
+          id: global.token,
+          name: global.loginInfo.name,
+          avatar: global.loginInfo.logo ? global.loginInfo.logo : profile,
+        }
+        return senduser;
     }
 
     goJobDetail(jobID) {
@@ -107,8 +105,55 @@ export default class ChatScreen extends React.Component {
     }
 
     onClickAccept(jobID) {
+        global.offerMessage = 0;
         this.setState({accpet: "Accepted"});
-        alert("Accept is completed");
+        const sender = {name : global.loginInfo.name, api_token : global.token, logo : global.loginInfo.logo};
+        let message = [];
+        message = [{
+            sender_id: global.senderID,
+            receiver_id: global.receiverID,
+            text: sender.name + " accepted",
+            message: sender.name + " accepted",
+            subject: 'accept message',
+            sender: sender,
+            id: this.state.jobID,
+            user: {
+              id: sender.api_token,
+              name: sender.name,
+              avatar: sender.logo ? sender.logo : profile,
+            },
+            meta: {
+                received: true,
+                direction: true
+            }
+        }];
+        firebaseSvc.send(message);  
+    }
+
+    onClickReject(jobID) {
+        global.offerMessage = 0;
+        this.setState({reject: "Rejected"});
+        const sender = {name : global.loginInfo.name, api_token : global.token, logo : global.loginInfo.logo};
+        let message = [];
+        message = [{
+            sender_id: global.senderID,
+            receiver_id: global.receiverID,
+            text: sender.name + " Rejected",
+            message: sender.name + " Rejected",
+            subject: 'reject message',
+            sender: sender,
+            id: this.state.jobID,
+            user: {
+              id: sender.api_token,
+              name: sender.name,
+              avatar: sender.logo ? sender.logo : profile,
+            },
+            meta: {
+                received: true,
+                direction: true
+            }
+        }];
+        firebaseSvc.send(message);
     }
     render() {
         return (
@@ -121,13 +166,21 @@ export default class ChatScreen extends React.Component {
                         </TouchableOpacity>
                     </Left>
                     <Body style={styles.headerBody }>
-                        <Title style={{color: '#FFF'}}>{this.state.senderName}</Title>
-                        <TouchableOpacity onPress={() => this.onClickAccept(this.state.jobID)}>
-                            <Text>{this.state.accpet}</Text>
-                        </TouchableOpacity>
-                        {/* <TouchableOpacity onPress={() => this.goJobDetail(this.state.jobID)}>                            
-                            <Text>{this.state.jobTitle}</Text>
-                        </TouchableOpacity> */}
+                        { global.offerMessage == 1?
+                        // <Title style={{color: '#FFF'}}>{this.state.senderName}</Title>
+                        <View style={{flexDirection: 'row'}}>
+                            <TouchableOpacity style={{borderColor: 'white', borderRadius: 5, borderWidth: 0.5}} onPress={() => this.onClickAccept(this.state.jobID)}>
+                                <Text style={{color:'white', padding: 8}}>{this.state.accpet}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{borderColor: 'white', borderRadius: 5, borderWidth: 0.5}} onPress={() => this.onClickReject(this.state.jobID)}>
+                                <Text style={{color:'white', padding: 8}}>{this.state.reject}</Text>
+                            </TouchableOpacity>
+                        </View>
+                        :
+                        
+                        <Text style={{color:'white', padding: 8}}></Text>
+                        
+                        }
                     </Body>
                     <Right style={{flex: 1}}>
                         <View style={{flexDirection: 'row'}}>
@@ -148,6 +201,7 @@ export default class ChatScreen extends React.Component {
                     alwaysShowSend="true"
                     messages={this.state.messages}
                     onSend={this.sendMsg}
+                    user={this.user}
                 />
             </View>
         </View>
@@ -157,7 +211,7 @@ export default class ChatScreen extends React.Component {
 
 const styles = StyleSheet.create({
     headerBody: {
-        flex: 2,
+        // flex: 1,
         alignItems: 'center',
     },
 });

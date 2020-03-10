@@ -116,7 +116,7 @@ export default class JobDetailScreen extends React.Component {
             isReviewModalVisible: false,
             spinner: false,
             loading: false,
-            jobDetailData: global.jobDetailData,
+            jobDetailData: [],
             detailLogo:global.detailLogo,
             likeStatus: global.favoriteJobStatus,
             spinner: false,
@@ -267,28 +267,29 @@ export default class JobDetailScreen extends React.Component {
             }];
 
             firebaseSvc.send(message);
-            this.setState({spinner: false});
-            Toast.show("تم إرسال الرسالة بنجاح");
-            // api.sendMessages(global.token, this.state.jobDetailData.job.users.id,  this.state.message, "Common Message", "common").then((res)=>{
-            //     console.log('sendMessage response____', res);  
-            //     if(res.status == 200){
-            //         this.setState({spinner: false});               
-            //         Toast.show(Labels.sendMessageSuccessTxt);
+            // this.setState({spinner: false});
+            // Toast.show("تم إرسال الرسالة بنجاح");
+
+            api.sendMessages(global.token, this.state.jobDetailData.job.users.id,  this.state.message, "Common Message", "common").then((res)=>{
+                console.log('sendMessage response____', res);  
+                if(res.status == 200){
+                    this.setState({spinner: false});               
+                    Toast.show(Labels.sendMessageSuccessTxt);
                     
-            //     }else{
-            //         Alert.alert(
-            //             'Error!',
-            //             res.errors,
-            //             [
-            //                 {text: 'OK', onPress: () =>  this.setState({spinner: false})},
-            //             ],
-            //             {cancelable: false},
-            //         );
-            //     }
-            // })
-            // .catch((error) => {
-            //     console.log(error);
-            // })
+                }else{
+                    Alert.alert(
+                        'Error!',
+                        res.errors,
+                        [
+                            {text: 'OK', onPress: () =>  this.setState({spinner: false})},
+                        ],
+                        {cancelable: false},
+                    );
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
         }else{
             Toast.show("Pleae fill the message text");
         }
@@ -304,31 +305,39 @@ export default class JobDetailScreen extends React.Component {
         this.setState({sendApplyJobModal: false});
 
         if(this.state.applyJobMessage){
-
             this.setState({spinner: true});               
             const sender = {
-                api_token: global.token,
-                name: global.loginInfo.name,
-                logo: global.loginInfo.logo,
+                name : global.loginInfo.name, 
+                api_token : global.token,
+                logo : global.loginInfo.logo
             };
             const message = [{
-                sender_id: global.token,
-                receiver_id: global.userDetailApiToken,
+                sender_id: sender.api_token,// freelancer id
+                receiver_id: global.userDetailApiToken,//client id
                 text: this.state.applyJobMessage,
                 message: this.state.applyJobMessage,
                 subject: 'Apply Job Message',
                 sender: sender,
-                type: 'apply_job'
+                id: this.state.jobDetailData.job.id,
+                user: {
+                    id: sender.api_token,
+                    name: sender.name,
+                    avatar: sender.logo ? sender.logo : profile,
+                },
+                meta: {
+                    received: true,
+                    direction: true
+                }
             }];
 
             firebaseSvc.send(message);
-            this.setState({spinner: false});
-            Toast.show("تم إرسال الرسالة بنجاح");
+            // this.setState({spinner: false});
+            // Toast.show("تم إرسال الرسالة بنجاح");
             api.sendMessages(global.token, this.state.jobDetailData.job.users.id, this.state.jobDetailData.job.id, this.state.applyJobMessage, "Apply Job Message", "apply_job").then((res)=>{
                 console.log('sendMessage response____', res);  
                 if(res.status == 200){
-                    //this.setState({spinner: false});               
-                    //Toast.show(Labels.sendMessageSuccessTxt);
+                    this.setState({spinner: false});               
+                    Toast.show(Labels.sendMessageSuccessTxt);
                     
                 }else{
                     Alert.alert(
@@ -584,13 +593,11 @@ export default class JobDetailScreen extends React.Component {
                                     <Text style={{padding: 20, textAlign: 'center', lineHeight: 16, fontFamily: 'TheSans-Plain'}}>{this.state.jobDetailData.job.job_details}</Text>
 
                                     <View style={{flexDirection: 'row', justifyContent: 'space-around', width: '100%'}}>
-                                        <TouchableOpacity onPress={()=>this.sendMessageModal()} style={{height: 40, width: '35%', backgroundColor: Colors.primarySpeical, borderRadius: 20, alignItems: 'center', justifyContent:'center'}}>
-                                            <Text style={{color: 'white'}}>{Labels._company_profile_sending}</Text> 
-
-                                        </TouchableOpacity>
+                                        {/* <TouchableOpacity onPress={()=>this.sendMessageModal()} style={{height: 40, width: '35%', backgroundColor: Colors.primarySpeical, borderRadius: 20, alignItems: 'center', justifyContent:'center'}}>
+                                            <Text style={{color: 'white'}}>{Labels._company_profile_sending}</Text>
+                                        </TouchableOpacity> */}
                                         <TouchableOpacity onPress={()=>this.sendApplyJobModal()} style={{height: 40, width: '35%', backgroundColor: Colors.primarySpeical, borderRadius: 20, alignItems: 'center', justifyContent:'center'}}>
-                                            <Text style={{color: 'white'}}>{Labels._job_detail_advance_button}</Text> 
-
+                                            <Text style={{color: 'white'}}>{Labels._job_detail_advance_button}</Text>
                                         </TouchableOpacity>
                                     </View>
                             

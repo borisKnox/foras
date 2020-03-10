@@ -20,6 +20,7 @@ import Dash from 'react-native-dash';
 import StripeFooter from '../../components/StripeFooter';
 import Colors from '../../constants/Colors';
 import { Labels } from '../../constants/Langs';
+import api from '../../constants/api';
 
 const logoUri = require('../../assets/images/icon-logo.png');
 
@@ -37,7 +38,23 @@ export default class EmailVerificationScreen extends React.Component {
     componentDidMount(){     
 
     }
-
+    resendEmail(){
+        api.resendEmail(global.token).then((res) => {
+            if(res.status == 200){
+                console.log("resend resend Email api response", res.message);
+            } else{
+                console.log("resend Email api error", res);
+            }
+        }).catch((error) => {
+            console.log(error);    
+        })
+    }
+    changeEmail() {
+        this.props.navigation.replace('LoginScreen');
+    }
+    gotoAddPhoneNumber(){
+        this.props.navigation.replace('AddPhoneNumberScreen');
+    }
     goNext() {
         if(global.isIndividual){
             this.props.navigation.replace('RegUserInfoScreen');
@@ -75,11 +92,11 @@ export default class EmailVerificationScreen extends React.Component {
                             
 
                             <View style={styles.switchButtonContainer}>
-                                <TouchableOpacity style={styles.switchButton} >
+                                <TouchableOpacity style={styles.switchButton} onPress={() => this.resendEmail()}>
                                     <Text style={styles.switchText} >{Labels._resend_email}</Text>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity style={styles.switchButton} onPress={() => this.setCompany()}>
+                                <TouchableOpacity style={styles.switchButton} onPress={() => this.changeEmail()}>
                                     <Text style={styles.switchText}>{Labels._change_email}</Text>
                                 </TouchableOpacity>
                             </View>
@@ -87,7 +104,7 @@ export default class EmailVerificationScreen extends React.Component {
                             <Dash style={styles.dash} dashColor = {Colors.secondaryText}/>
 
                             <View style={{}}>
-                                <TouchableOpacity style={styles.phoneVerifyButton}>
+                                <TouchableOpacity style={styles.phoneVerifyButton}  onPress={() => this.gotoAddPhoneNumber()}>
                                     <Text style={styles.switchText} >{Labels._confirm_by_mobile}</Text>
                                 </TouchableOpacity>
                             </View>

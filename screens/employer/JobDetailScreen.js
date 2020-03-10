@@ -136,8 +136,6 @@ export default class JobDetailScreen extends React.Component {
             sendOfferJobModal: false,
             message: '',
             offerJobMessage: ''
-
-
         }
     }
 
@@ -206,78 +204,6 @@ export default class JobDetailScreen extends React.Component {
         .catch((error) => {
             console.log(error);
         })
-
-    }
-
-    sendMessageModal(){
-        this.setState({sendMessageModal: true});
-    }
-
-    sendMessage=()=>{
-        
-        this.setState({sendMessageModal: false});
-
-        if(this.state.message){
-            this.setState({spinner: true});               
-
-            api.sendMessages(global.token, global.jobDetailId, this.state.message, "Common Message", "common").then((res)=>{
-                console.log('sendMessage response____', res);  
-                if(res.status == 200){
-                    this.setState({spinner: false});               
-                    Toast.show(Labels.sendMessageSuccessTxt);
-                    
-                }else{
-                    Alert.alert(
-                        'Error!',
-                        res.errors,
-                        [
-                            {text: 'OK', onPress: () =>  this.setState({spinner: false})},
-                        ],
-                        {cancelable: false},
-                    );
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-        }
-
-    }
-
-    sendOfferJobModal(){
-        this.setState({sendOfferJobModal: true});
-    }
-
-    sendOfferJob=()=>{
-        
-        this.setState({sendOfferJobModal: false});
-
-        if(this.state.offerJobMessage){
-            this.setState({spinner: true});               
-
-            api.sendMessages(global.token, this.state.jobDetailData.job.users.id, this.state.offerJobMessage, "Offer Job Message", "offer_job").then((res)=>{
-                console.log('sendMessage response____', res);  
-                if(res.status == 200){
-                    this.setState({spinner: false});               
-                    Toast.show(Labels.sendMessageSuccessTxt);
-                    
-                }else{
-                    Alert.alert(
-                        'Error!',
-                        res.errors,
-                        [
-                            {text: 'OK', onPress: () =>  this.setState({spinner: false})},
-                        ],
-                        {cancelable: false},
-                    );
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-        }else{
-            Toast.show("Pleae fill the message text");
-        }
 
     }
 
@@ -511,7 +437,7 @@ export default class JobDetailScreen extends React.Component {
 
                                     <Text style={{padding: 20, textAlign: 'center', lineHeight: 16, fontFamily: 'TheSans-Plain'}}>{this.state.jobDetailData.job.job_details}</Text>
 
-                                    <View style={{flexDirection: 'row', justifyContent: 'space-around', width: '100%'}}>
+                                    {/* <View style={{flexDirection: 'row', justifyContent: 'space-around', width: '100%'}}>
                                         <TouchableOpacity onPress={()=>this.sendMessageModal()} style={{height: 40, width: '35%', backgroundColor: Colors.primarySpeical, borderRadius: 20, alignItems: 'center', justifyContent:'center'}}>
                                             <Text style={{color: 'white'}}>{Labels._company_profile_sending}</Text> 
                                         </TouchableOpacity>
@@ -519,7 +445,7 @@ export default class JobDetailScreen extends React.Component {
                                         <TouchableOpacity  style={{height: 40, width: '35%', backgroundColor: Colors.primarySpeical, borderRadius: 20, alignItems: 'center', justifyContent:'center'}}>
                                             <Text style={{color: 'white'}}>{Labels._job_detail_advance_button}</Text>
                                         </TouchableOpacity>
-                                    </View>                
+                                    </View>                 */}
 
                                     <Dash style={{width: '90%', height: 1, marginTop: 20,}} dashColor={Colors.thirdBackground}></Dash>
                                     <Text style={{marginTop: 15,fontFamily: 'TheSans-Bold'}}> {Labels._job_detail_about_company}</Text>

@@ -58,7 +58,7 @@ class JobListItem extends React.Component {
     constructor(props) {
         super(props);
     }
-
+    
     onSelect = (index) => {        
         this.props.onSelect(index);
     };

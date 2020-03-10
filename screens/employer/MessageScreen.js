@@ -51,23 +51,23 @@ class Item extends React.Component{
 
     render(){
         return(
-            <View style={this.props.item.type =="apply_job"? styles.tableContainer1 : styles.tableContainer}>
+            <View style={this.props.item.subject =="Apply Job Message"? styles.tableContainer1 : styles.tableContainer}>
                 <View style={styles.messageIconContainer}>
                     <Image source={{uri: this.props.item.sender.logo}} style={{width: 50, height: 50, borderRadius: 25}}/>
                 </View>
-                {this.props.item.type =="apply_job"?
+                {this.props.item.subject =="Apply Job Message"?
                     <TouchableOpacity style={styles.messageTextContainer} onPress={() => this.onSelect(this.props.item)}>
                         <Text style={styles.messageTitle1}>{this.props.item.subject}</Text>
                         <Text style={styles.name}>{this.props.item.sender.name}</Text>
                         <Text style={styles.messageContent}>{this.props.item.message}</Text>                    
-                        <Text style={styles.messageTime}>{new Date(parseInt(this.props.item.created_at)).toUTCString()}</Text>
+                        <Text style={styles.messageTime}>{new Date(parseInt(this.props.item.createdAt)).toUTCString()}</Text>
                     </TouchableOpacity>
                     :
                     <TouchableOpacity style={styles.messageTextContainer} onPress={() => this.onSelect(this.props.item)}>
                         {/* <Text style={styles.messageTitle}>{this.props.item.subject}</Text> */}
                         <Text style={styles.name}>{this.props.item.sender.name}</Text>
                         <Text style={styles.messageContent}>{this.props.item.message}</Text>                    
-                        <Text style={styles.messageTime}>{new Date(parseInt(this.props.item.created_at)).toUTCString()}</Text>
+                        <Text style={styles.messageTime}>{new Date(parseInt(this.props.item.createdAt)).toUTCString()}</Text>
                     </TouchableOpacity>
                 }
             </View>
@@ -81,23 +81,61 @@ export default class MessageScreen extends React.Component {
         this.state = {
             spinner: false,
             messages: [],
-            favoriteIndividualsList: []
+            favoriteIndividualsList: [],
+            newmsg: false,
         }
     }
 
     componentDidMount(){
         this.setState({spinner: true});
-        console.log(global.token);
+
         let senderid = [];
-        firebaseSvc.ref.orderByChild('receiver_id').equalTo(global.token).on("child_added", function(snapshot) {
-            if(senderid.indexOf(snapshot.val().sender_id) == -1){
-                console.log("snapchat in corporator", snapshot);
-                this.state.messages.unshift(snapshot.val());
-                this.setState({messages: this.state.messages, newmsg: true});
-                senderid.push(snapshot.val().sender_id);
-            }
+        let sndmsg = [];
+        firebaseSvc.ref.on("child_added", function(snapshot) {                
             
+            if(snapshot.key.search(global.token) != -1){
+                snapshot.ref.on("child_added",function(childsnap){
+                    childsnap.ref.on("child_added",function(grandchild){
+                        if(grandchild.child('sender/api_token').val() != global.token){
+                            const elmloc = senderid.indexOf(grandchild.child('id').val());
+                            if(elmloc == -1){                     
+                                senderid.push(grandchild.child('id').val());
+                                sndmsg.push(grandchild.val());
+                            }else{
+                                // sndmsg[elmloc]=grandchild.val();
+                                if(sndmsg[elmloc].sender_id != grandchild.val().sender_id){
+                                    sndmsg.push(grandchild.val());
+                                }else{
+                                    sndmsg[elmloc]=grandchild.val();
+                                } 
+                            }
+                        }                        
+                        // console.log(childsnap.child('meta').val().received);
+                        this.setState({newmsg: grandchild.child('meta').val().received, messages: sndmsg});
+                    }, this);                                                
+                }, this); 
+            }                
         }, this);
+        // api.message(global.token).then((res)=>{
+        //     console.log('message response____', res);  
+        //     if(res.status == 200){
+        //         this.setState({spinner: false});
+        //         this.setState({messages: res.data});                
+                
+        //     }else{
+        //         Alert.alert(
+        //             'Error!',
+        //             'Error',
+        //             [
+        //                 {text: 'OK', onPress: () =>  this.setState({spinner: false})},
+        //             ],
+        //             {cancelable: false},
+        //         );
+        //     }
+        // })
+        // .catch((error) => {
+        //     console.log(error);
+        // })
 
         api.getFavoriteIndividuals(global.token).then((res)=>{
             console.log('getFavoriteIndividuals response____', );  
@@ -119,10 +157,13 @@ export default class MessageScreen extends React.Component {
         })
         .catch((error) => {
             console.log(error);
-        }) 
+        })
     }
-
+    gotoIndividualList () {
+        this.props.navigation.navigate('UserList');
+    }
     onSelect = (item) => {
+        console.log("message screen componet didmount", item);
         global.favoriteIndividualStatus = false
 
         this.state.favoriteIndividualsList.map((datas, index)=>{
@@ -130,11 +171,17 @@ export default class MessageScreen extends React.Component {
                 global.favoriteIndividualStatus = true;                
             }
         })
-        global.userDetailId = item.sender_id;
+        if(item.subject == "Apply Job Message"){
+            global.applyMessage = 1;
+        } else{
+            global.applyMessage = 0;
+        }
+        global.senderID = item.sender_id;
+        global.receiverID = item.receiver_id;
         global.detailLogo = item.sender.logo;
-        global.job_id = item.job_id;
+        global.job_id = item.id;
         global.chatDetail = item;
-        this.props.navigation.navigate('Chater');
+        this.props.navigation.replace('Chater');
     }
 
     render() {
@@ -172,11 +219,11 @@ export default class MessageScreen extends React.Component {
                             <FlatList
                                 data={this.state.messages}
                                 renderItem={({ item }) => <Item item={item} onSelect={this.onSelect}  />}
-                                keyExtractor={item => item.id}
+                                keyExtractor={item => item.sender_id}
                             />
 
 
-                        <TouchableOpacity style={styles.editButtonPart} >
+                        <TouchableOpacity style={styles.editButtonPart}>
                             <Image source={require('../../assets/images/notification/icon-edit-message.png')} style={styles.editIcon}/>
                         </TouchableOpacity>
 

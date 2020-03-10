@@ -107,7 +107,7 @@ export default class MainScreen extends React.Component {
             isFriday: false,
             isSaturday: false,
             isSunday: false,
-          
+            mapMargin: 1
         }
     }
 
@@ -284,18 +284,36 @@ export default class MainScreen extends React.Component {
         
         
             console.log(JSON.stringify(message));
-            const notification = new firebase.notifications.Notification()
-            .setNotificationId('notificationId')
-            .setTitle(text2)
-            .setBody(text3)
-            .setData({
-                key1: 'value1',
-                key2: 'value2',
-            });
-            notification
-            .android.setChannelId('channelId')
-            .android.setSmallIcon('ic_launcher');
-            firebase.notifications().displayNotification(notification);
+            if(Platform.OS === 'android'){
+                const notification = new firebase.notifications.Notification()
+                .setNotificationId('notificationId')
+                .setTitle(text2)
+                .setBody(text3)
+                .setData({
+                    key1: 'value1',
+                    key2: 'value2',
+                });
+                notification
+                .android.setChannelId('channelId')
+                .android.setSmallIcon('ic_launcher');
+                firebase.notifications().displayNotification(notification)
+                .catch(err => console.error(err));
+
+            }else if (Platform.OS === 'ios') {
+
+                const localNotification = new firebase.notifications.Notification()
+                  .setNotificationId(notification.notificationId)
+                  .setTitle(notification.title)
+                  .setSubtitle(notification.subtitle)
+                  .setBody(notification.body)
+                  .setData(notification.data)
+                  .ios.setBadge(notification.ios.badge);
+        
+                firebase.notifications()
+                  .displayNotification(localNotification)
+                  .catch(err => console.error(err));
+        
+              }
         });
     }
     //------------------Notification End---------------//
@@ -501,13 +519,15 @@ export default class MainScreen extends React.Component {
 
 
     onGoUserListScreen() {
-        this.props.navigation.navigate('UserListScreen');
+        this.props.navigation.navigate('UserList');
     }
     goToUserDetail=(data)=>{
         global.userDetailId = data.id;
-        this.props.navigation.navigate('UserDetailScreen');        
+        this.props.navigation.navigate('UserDetail');        
     }
-
+    setMargin = () => {
+        this.setState({mapMargin:0})
+        }
     render() {
 
         return (
@@ -543,8 +563,8 @@ export default class MainScreen extends React.Component {
                         <View style={styles.mapMaskView}>
                             <MapView 
                                 style={styles.mapContainer}
-                                region ={this.state.region} 
-                            >
+                                region ={this.state.region}
+                                >
                                 <MapView.Marker
                                     // onPress={() => this.goToJobDetail(data)}
                                     coordinate={{ latitude: Number(LoginData.latitude), longitude: Number(LoginData.longitude)}}>
@@ -555,11 +575,25 @@ export default class MainScreen extends React.Component {
                                 {this.state.individualsList.map((data, index)=>(
                                     <MapView.Marker
                                         key={index}
-                                        onPress={() => this.goToUserDetail(data)}                                
+                                        // onPress={() => this.goToUserDetail(data)}
                                         coordinate={{ latitude: Number(data.latitude), longitude: Number(data.longitude)}}>
                                             <View style={styles.markerBg}>                                            
                                                 <Image source={require('../../assets/images/marker_otherPosition.png')}   style={styles.mapmarker} />
-                                            </View> 
+                                            </View>
+                                            <MapView.Callout tooltip style={{width: 140,}}  onPress={() => this.goToUserDetail(data)}>
+                                                <View style={{flexDirection: 'column',alignSelf: 'flex-start',}}>
+                                                    <TouchableOpacity underlayColor='transparent'>
+                                                        <View style={{backgroundColor:'white', borderColor: 'red',borderRadius: 6,borderWidth: 0.5,}}>
+                                                            <View style={{}}>
+                                                                <Text numberOfLines={2} ellipsizeMode={'tail'}>{data.name}</Text>
+                                                                <Text>{data.about_me}</Text>
+                                                            </View>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                    <View style={styles.arrowBorder} />
+                                                    <View style={styles.arrow} />
+                                                </View>
+                                            </MapView.Callout> 
                                     </MapView.Marker>    
                                 ))}
                             </MapView>
@@ -905,7 +939,7 @@ const styles = StyleSheet.create({
     },
 
     mapContainer: {
-        height: Dimensions.get('window').height,
+        height: Dimensions.get('window').height * 0.8,
         width: Dimensions.get('window').width * 0.85,
         // borderRadius: 20,
         // marginTop: 20,

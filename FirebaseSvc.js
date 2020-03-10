@@ -114,18 +114,6 @@ class FirebaseSvc {
     return (firebase.auth().currentUser || {}).uid;
   }
  
-  setmassgeid = msgid => {
-    this.messageid =  msgid;
-    console.log(this.messageid);
-    return this.messageid;
-  }
-
-  setsearchid = searchid => {
-    this.msgsearchid =  searchid;
-    console.log(this.msgsearchid);
-    return this.msgsearchid;
-  }
-
   get ref() {
       
     return firebase.database().ref('Messages');
@@ -133,13 +121,13 @@ class FirebaseSvc {
   }
 
   parse = snapshot => {
-    const { timestamp: numberStamp, text, sender_id, receiver_id, sender, subject, message } = snapshot.val();
-    // const { key: id } = snapshot;
+    const { timestamp: numberStamp, text, sender_id, receiver_id, sender, subject, message, createdAt, user, meta } = snapshot.val();
+    const { key: id } = snapshot;
     // const { key: _id } = snapshot; //needed for giftedchat
     const timestamp = new Date(numberStamp);
 
     const oldmessage = {
-      // id,
+      id,
       // _id,
       timestamp,
       text,
@@ -148,19 +136,24 @@ class FirebaseSvc {
       receiver_id,
       message,
       subject,
+      id,
+      createdAt,
+      user,
+      meta,
       sender
     };
     // console.log(message);
     return oldmessage;
   };
 
-  refOn = callback => {
-    console.log(this.messageid);
+  refOn = (msg, callback) => {
     this.ref
-      .orderByChild('user/id')
-      .equalTo(this.messageid)
+      .child(msg.receiver_id+'_'+msg.sender_id)
+      .child(msg.id)
+      .ref
       .limitToLast(20)
       .on('child_added', snapshot => callback(this.parse(snapshot)));
+    
   }
 
   get timestamp() {
@@ -169,9 +162,9 @@ class FirebaseSvc {
   
   // send the message to the Backend
   send = messages => {
-    console.log(messages);
     for (let i = 0; i < messages.length; i++) {
-      const { text, sender_id, receiver_id, sender, subject, message } = messages[i];
+      const { text, sender_id, receiver_id, sender, subject, message, id, createdAt, user, meta  } = messages[i];
+      const message_id = '';
       const newmessage = {
         text,
         sender_id,
@@ -179,10 +172,12 @@ class FirebaseSvc {
         sender,
         subject,
         message,
-        created_at: this.timestamp,
+        id,
+        createdAt: this.timestamp,
+        meta,
+        user
       };
-      
-      this.ref.push(newmessage);
+      this.ref.child(newmessage.receiver_id+'_'+newmessage.sender_id).child(newmessage.id).push(newmessage); 
     }
   };
 

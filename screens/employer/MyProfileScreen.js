@@ -45,12 +45,16 @@ export default class MyProfileScreen extends React.Component {
         this.setState({ isReviewModalVisible: !this.state.isReviewModalVisible });
     };
 
+    goPackageScreen= () =>{
+        this.props.navigation.replace('CompanyPackage');
+    }
+
     goJobPostScreen= () =>{
-        this.props.navigation.navigate('JobPost');
+        this.props.navigation.replace('JobPost');
     }
 
     goToProfileEdit =()=>{
-        this.props.navigation.navigate('EditProfile');
+        this.props.navigation.replace('EditProfile');
     }
 
 
@@ -109,7 +113,7 @@ export default class MyProfileScreen extends React.Component {
                                 <Text style={{ color: Colors.primarySpeical}}>{Labels._company_profile_edit_button}</Text>
                             </TouchableOpacity>
                             
-                            {/* <View style={{width: Dimensions.get('window').width * 0.85, overflow: 'hidden' , borderRadius: 10, backgroundColor: 'white', alignItems: 'center', marginTop: 5}}>
+                            <View style={{width: Dimensions.get('window').width * 0.85, overflow: 'hidden' , borderRadius: 10, backgroundColor: 'white', alignItems: 'center', marginTop: 5}}>
                                 <Text style={{marginTop:10,marginBottom:10}}>حزمة التواصل مع ٣٠ م</Text>
                                 <Dash style={{width: '90%', height: 1,}} dashColor={Colors.thirdBackground}></Dash>
                                 <View style={{alignItems: 'flex-start'}}>
@@ -127,10 +131,10 @@ export default class MyProfileScreen extends React.Component {
                                     </Text>
                                 </View>
                                 <Dash style={{width: '90%', height: 1,}} dashColor={Colors.thirdBackground}></Dash>
-                                <TouchableOpacity onPress={()=> this.goJobPostScreen()} style={{marginTop: 10, marginBottom: 10, width: '85%', height: 35, borderRadius: 20, backgroundColor: '#F2620F', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                                <TouchableOpacity onPress={()=> this.goPackageScreen()} style={{marginTop: 10, marginBottom: 10, width: '85%', height: 35, borderRadius: 20, backgroundColor: '#F2620F', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
                                     <Text style={{ color: 'white',}}>تجديد الحزمة او اختي</Text>
                                 </TouchableOpacity>
-                            </View> */}
+                            </View>
                             <Dash style={{width: '90%', height: 1, marginTop: 20,}} dashColor={Colors.thirdBackground}></Dash>
 
                             <TouchableOpacity onPress={()=> this.goJobPostScreen()} style={{marginTop: 12, width: '65%', height: 35, borderRadius: 20, backgroundColor: Colors.primarySpeical, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>

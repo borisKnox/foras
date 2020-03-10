@@ -57,7 +57,8 @@ export default class CompanyDetailScreen extends React.Component {
                 this.setState({spinner: false});
                 this.setState({companyDetailData: res.data});
 
-                // console.log("====companyDetailData===", this.state.companyDetailData);           
+                console.log("====companyDetailData===", this.state.companyDetailData);
+                global.companyDetailData = this.state.companyDetailData;       
                 this.setState({loading: true});
                 
             }else{
@@ -167,8 +168,6 @@ export default class CompanyDetailScreen extends React.Component {
 
         if(this.state.message){
             this.setState({spinner: true});               
-
-            // sendMessages(token, receiver_id, job_id, message, subject, type)
 
             api.sendMessages(global.token, global.companyDetailId, '', this.state.message, "", "common").then((res)=>{
             //api.sendMessages(global.token, global.companyDetailId, this.state.message).then((res)=>{
@@ -373,9 +372,9 @@ export default class CompanyDetailScreen extends React.Component {
 
                                     <Text style={{padding: 20, textAlign: 'center', lineHeight: 16, fontFamily: 'TheSans-Plain'}}>{this.state.companyDetailData.user.about_me == null? "": this.state.companyDetailData.user.about_me}</Text>
 
-                                    <TouchableOpacity onPress={()=>this.sendMessageModal()} style={{height: 40, width: '55%', backgroundColor: Colors.primarySpeical, borderRadius: 20, alignItems: 'center', justifyContent:'center'}}>
+                                    {/* <TouchableOpacity onPress={()=>this.sendMessageModal()} style={{height: 40, width: '55%', backgroundColor: Colors.primarySpeical, borderRadius: 20, alignItems: 'center', justifyContent:'center'}}>
                                         <Text style={{color: 'white'}}>{Labels._company_profile_sending}</Text>
-                                    </TouchableOpacity>
+                                    </TouchableOpacity> */}
 
                                     <Dash style={{width: '90%', height: 1, marginTop: 20,}} dashColor={Colors.thirdBackground}></Dash>
                                     <Text style={{marginTop: 15,fontFamily: 'TheSans-Bold'}}> {Labels._copmpany_profile_open}</Text>

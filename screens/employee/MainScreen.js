@@ -254,7 +254,7 @@ async createNotificationListeners() {
         const { title, body } = notificationOpen.notification;
         console.log('onNotificationOpened:');
         
-        this.props.navigation.replace('Notification');
+        this.props.navigation.replace('Notification1');
     });
 
     /*
@@ -274,20 +274,35 @@ async createNotificationListeners() {
         var text2=JSON.parse(text1).title;
         var text3=JSON.parse(text1).body;
     
+        if(Platform.OS === 'android'){
+            console.log(JSON.stringify(message));
+            const notification = new firebase.notifications.Notification()
+            .setNotificationId('notificationId')
+            .setTitle(text2)
+            .setBody(text3)
+            .setData({
+                key1: 'value1',
+                key2: 'value2',
+            });
+            notification
+            .android.setChannelId('channelId')
+            .android.setSmallIcon('ic_launcher');
+            firebase.notifications().displayNotification(notification).catch(err => console.error(err));
+        } else if (Platform.OS === 'ios') {
+
+            const localNotification = new firebase.notifications.Notification()
+              .setNotificationId(notification.notificationId)
+              .setTitle(notification.title)
+              .setSubtitle(notification.subtitle)
+              .setBody(notification.body)
+              .setData(notification.data)
+              .ios.setBadge(notification.ios.badge);
     
-        console.log(JSON.stringify(message));
-        const notification = new firebase.notifications.Notification()
-        .setNotificationId('notificationId')
-        .setTitle(text2)
-        .setBody(text3)
-        .setData({
-            key1: 'value1',
-            key2: 'value2',
-        });
-        notification
-        .android.setChannelId('channelId')
-        .android.setSmallIcon('ic_launcher');
-        firebase.notifications().displayNotification(notification);
+            firebase.notifications()
+              .displayNotification(localNotification)
+              .catch(err => console.error(err));
+    
+        }
     });
 }
 //------------------Notification End---------------//
@@ -492,12 +507,13 @@ async createNotificationListeners() {
 
     goToJobDetail=(data)=>{
         global.jobDetailId = data.job_id;
-        this.props.navigation.navigate('JobDetailScreen');        
+        console.log("freelancer main screen map click", data);
+        this.props.navigation.navigate('JobDetail1');        
     }
 
 
     onGoJobListScreen() {
-        this.props.navigation.navigate('JobListScreen');
+        this.props.navigation.navigate('JobList1');
     }
 
     
@@ -548,11 +564,25 @@ async createNotificationListeners() {
                                 {this.state.jobList.map((data, index)=>(
                                     <MapView.Marker
                                         key={index}
-                                        onPress={() => this.goToJobDetail(data)}
+                                        // onPress={() => this.goToJobDetail(data)}
                                         coordinate={{ latitude: Number(data.users.latitude), longitude: Number(data.users.longitude)}}>
                                             <View style={styles.markerBg}>                                            
                                                 <Image source={require('../../assets/images/marker_otherPosition.png')}   style={styles.mapmarker} />
-                                            </View> 
+                                            </View>
+                                            <MapView.Callout tooltip style={{width: 140,}} onPress={() => this.goToJobDetail(data)}>
+                                                <View style={{flexDirection: 'column',alignSelf: 'flex-start',}}>
+                                                    <TouchableOpacity underlayColor='transparent'>
+                                                        <View style={{backgroundColor:'white', borderColor: 'red',borderRadius: 6,borderWidth: 0.5,}}>
+                                                            <View style={{}}>
+                                                                <Text numberOfLines={2} ellipsizeMode={'tail'}>{data.users.name}</Text>
+                                                                <Text>{data.users.about_me}</Text>
+                                                            </View>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                    <View style={styles.arrowBorder} />
+                                                    <View style={styles.arrow} />
+                                                </View>
+                                            </MapView.Callout> 
                                     </MapView.Marker>    
                                 ))}
                             </MapView>
@@ -908,7 +938,7 @@ const styles = StyleSheet.create({
     },
 
     mapContainer: {
-        height: Dimensions.get('window').height,
+        height: Dimensions.get('window').height * 0.8,
         width: Dimensions.get('window').width * 0.85,
         // borderRadius: 20,
         // marginTop: 20,

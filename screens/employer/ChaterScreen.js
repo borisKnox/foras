@@ -38,33 +38,23 @@ export default class ChaterScreen extends React.Component {
     }
 
     componentDidMount(){
+        // console.log("global.chatdetail in charterscreen",global.chatDetail);
         this.setState({
             senderName: global.chatDetail.sender.name,
-            jobID: global.chatDetail.job_id,
+            jobID: global.chatDetail.id,
             jobTitle: global.chatDetail.subject
-        });
-        firebaseSvc.refOn(message => 
-            this.setState(previousState => ({
-              messages: GiftedChat.append(previousState.messages, message),
-              })
-            )
-        );
-        // if (global.chatDetail!=this.state.messages) {
-  
-        //     console.log("global.chatDetail===>",global.chatDetail);
-            
-        //     this.state.messages=[];
-        //     this.setState({messages: this.state.messages});
-    
-        //     firebaseSvc.ref.on("child_added", function(snapshot) {
-              
-        //       if(snapshot.child('sender_id').val() == global.chatDetail.sender_id && snapshot.child('receiver_id').val() == global.loginInfo.api_token || 
-        //       snapshot.child('receiver_id').val() == global.chatDetail.sender_id && snapshot.child('sender_id').val() == global.loginInfo.api_token ){
-        //         this.state.messages.unshift(snapshot.val());
-        //       }         
-        //       this.setState({messages: this.state.messages});
-        //       }, this);
-        // }     
+        });        
+ 
+        // if (global.chatDetail != this.state.messages) {   
+
+            firebaseSvc.refOn(global.chatDetail, message => 
+                this.setState(previousState => ({
+                    messages: GiftedChat.append(previousState.messages, message),
+                    direction: global.chatDetail.meta.direction,
+                    offer: global.chatDetail.subject
+                }))
+            );
+        // } 
     }
 
     componentWillUnmount() {
@@ -73,38 +63,71 @@ export default class ChaterScreen extends React.Component {
 
     goJobDetail(jobID) {
         this.setState({spinner: true});
-        this.props.navigation.replace('JobDetail1');
+        this.props.navigation.replace('JobDetail');
     }
 
     onClickAward(jobID){
-        this.setState({award: "Awarded"});
-        alert("Offer is completed");
+        const sender = {name : global.loginInfo.name, api_token : global.token, logo : global.loginInfo.logo};
+        let message = [];
+    
+        message = [{
+            sender_id: global.senderID,
+            receiver_id: global.receiverID,
+            text:  this.state.senderName + ' are awarded',
+            message: this.state.senderName + ' are awarded',
+            subject: 'Offer Job Message',
+            sender: sender,
+            id: this.state.jobID,
+            user: {
+                id: sender.api_token,
+                name: sender.name,
+                avatar: sender.logo ? sender.logo : profile,
+            },
+            meta: {
+                received: true,
+                direction: true
+            }
+        }];
+
+        firebaseSvc.send(message);
     }
 
     sendMsg = (msg) => {
-
+        const sender = {name : global.loginInfo.name, api_token : global.token, logo : global.loginInfo.logo};
         let message = [];
-        
         msg.map((obj, index) =>
             {
+              
               message = [{
-                sender_id: global.loginInfo.api_token,
-                receiver_id: global.chatDetail.sender_id,
-                // message: this.state.message,
+                sender_id: global.senderID,
+                receiver_id: global.receiverID,
                 text: obj.text,
                 message: obj.text,
                 subject: 'real message',
-                sender: { api_token: global.loginInfo.api_token,
-                        name: global.loginInfo.name,
-                        logo: global.loginInfo.logo,
-                    },
-                type: 'common'
-              }];
-              console.log('receiver id===>',message);
-              firebaseSvc.send(message);
-            }
-        )
+                sender: sender,
+                id: this.state.jobID,
+                user: {
+                  id: sender.api_token,
+                  name: sender.name,
+                  avatar: sender.logo ? sender.logo : profile,
+                },
+                meta: {
+                    received: true,
+                    direction: true
+                }
+              }];                           
+            }            
+        );
+        firebaseSvc.send(message);
     }
+    get user() {
+        const senduser = {
+          id: global.token,
+          name: global.loginInfo.name,
+          avatar: global.loginInfo.logo ? global.loginInfo.logo : profile,
+        }
+        return senduser;
+      }
 
     render() {
         return (
@@ -117,20 +140,19 @@ export default class ChaterScreen extends React.Component {
                         </TouchableOpacity>
                     </Left>
                     <Body style={styles.headerBody }>
-                        <Title style={{color: '#FFF'}}>{this.state.senderName}</Title>
-                        {/* <TouchableOpacity onPress={() => this.goJobDetail(this.state.jobID)}>
-                            <Text>{this.state.jobTitle}</Text>
-                        </TouchableOpacity> */}
-                        <TouchableOpacity onPress={() => this.onClickAward(this.state.jobID)}>
-                            <Text>{this.state.award}</Text>
+                        {/* <Title style={{color: '#FFF'}}>{this.state.senderName}</Title> */}
+                        
+                        <TouchableOpacity style={{borderColor: 'white', borderRadius: 5, borderWidth: 0.5}} onPress={() => this.onClickAward(this.state.jobID)}>
+                            <Text style={{color:'white', padding: 8}}>{this.state.award}</Text>
                         </TouchableOpacity>
+                        
                     </Body>
                     <Right style={{flex: 1}}>
                         <View style={{flexDirection: 'row'}}>
-                            <TouchableOpacity onPress={() => this.props.navigation.replace('Notification1')}>
+                            <TouchableOpacity onPress={() => this.props.navigation.replace('Notification')}>
                                 <Image source = { require('../../assets/images/sidemenu/icon-menu-bell.png') }style={{ width: 19, height: 18, marginRight: 16, marginTop: -2, resizeMode: 'stretch' }} />
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => this.props.navigation.replace('Message1')}>
+                            <TouchableOpacity onPress={() => this.props.navigation.replace('Message')}>
                                 <Image source = { require('../../assets/images/sidemenu/icon-menu-mail.png') }style={{ width: 20, height: 16, marginRight: 14, resizeMode: 'stretch' }} />
                             </TouchableOpacity>
                         </View>
@@ -144,6 +166,7 @@ export default class ChaterScreen extends React.Component {
                     alwaysShowSend="true"
                     messages={this.state.messages}
                     onSend={this.sendMsg}
+                    user={this.user}
                 />
             </View>
         </View>

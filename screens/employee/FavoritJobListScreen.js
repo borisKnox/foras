@@ -164,7 +164,7 @@ export default class FavoritJobListScreen extends React.Component {
     }
 
     onGoJobListScreen() {
-        this.props.navigation.navigate('Main');
+        this.props.navigation.navigate('Main1');
     }
 
     toggleWorkdaysModal = () => {

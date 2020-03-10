@@ -5,11 +5,15 @@ const emailLoginUrl = server + "auth/login";
 const socialLoginUrl = server + "auth/login/socials";
 
 const emailRegisterUrl = server + "auth/register";
+const verifyEmailURL = server + "auth/verify/email";
 const registerProfileUrl = server + "auth/register/profile";
 const getJobCategoriesUrl = server + "categories";
 const createJobUrl = server + "jobs/create";
 const getJobListUrl = server + "jobs/read";
 const getJobDetailtUrl = server + "jobs/details/";
+const sendJobOfferUrl = server + "jobs/offer/";
+const sendJobAcceptUrl = server + "jobs/accept/";
+const sendJobRejectUrl = server + "jobs/reject/";
 
 const getIndividualsListUrl = server + "users/individuals";
 
@@ -36,8 +40,6 @@ const notificationUrl = server + "notifications";
 const editProfileUrl = server + "users/profile/update";
 const uploadAvatarUrl = server + "users/profile/upload";
 
-
-const newPackageUrl  = server + "newPackage";
 const getPackageListUrl  = server + "admin/getPackageList";
 const setPackageUrl  = server + "setPackage";
 
@@ -173,6 +175,34 @@ const api = {
                 "latitude": UserData.latitude            
 
             })
+        }).then((response) => response.json());
+        
+        return result;
+    },
+
+    verifyEmail(token) {
+        console.log('_====verifyEmail API===');        
+        result = fetch(verifyEmailURL, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },
+        }).then((response) => response.json());
+        
+        return result;
+    },
+
+    resendEmail(token) {
+        console.log('_====resendEmail API===');        
+        result = fetch(verifyEmailURL, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },
         }).then((response) => response.json());
         
         return result;
@@ -343,7 +373,49 @@ const api = {
         }).then((response) => response.json());
         
         return result;
-    },    
+    },
+    sendJobOffer(token) {
+        console.log('_====sendJobOffer API===');
+        var url =  sendJobOfferUrl + id ;
+        result = fetch(url, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },            
+        }).then((response) => response.json());
+        
+        return result;
+    },
+    sendJobAccept(token) {
+        console.log('_====sendJobAccept API===');
+        var url =  sendJobAcceptUrl + id ;
+        result = fetch(url, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },            
+        }).then((response) => response.json());
+        
+        return result;
+    }, 
+    sendJobReject(token) {
+        console.log('_====sendJobReject API===');
+        var url =  sendJobRejectUrl + id ;
+        result = fetch(url, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },            
+        }).then((response) => response.json());
+        
+        return result;
+    }, 
     
     //-------------Individual------------//
     getIndividualsList(token) {

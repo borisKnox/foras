@@ -198,26 +198,26 @@ export default class UserDetailScreen extends React.Component {
             this.setState({spinner: false});
             Toast.show("تم إرسال الرسالة بنجاح");
 
-            api.sendMessages(global.token, global.userDetailId, this.state.message, "Common Message", "common").then((res)=>{
-                console.log('sendMessage response____', res);  
-                if(res.status == 200){
-                    //this.setState({spinner: false});               
-                    //Toast.show(Labels.sendMessageSuccessTxt);
+            // api.sendMessages(global.token, global.userDetailId, global.job_id, this.state.message, "Common Message", "common").then((res)=>{
+            //     console.log('sendMessage response____', res);  
+            //     if(res.status == 200){
+            //         this.setState({spinner: false});               
+            //         Toast.show(Labels.sendMessageSuccessTxt);
                     
-                }else{
-                    Alert.alert(
-                        'Error!',
-                        res.errors,
-                        [
-                            {text: 'OK', onPress: () =>  this.setState({spinner: false})},
-                        ],
-                        {cancelable: false},
-                    );
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+            //     }else{
+            //         Alert.alert(
+            //             'Error!',
+            //             res.errors,
+            //             [
+            //                 {text: 'OK', onPress: () =>  this.setState({spinner: false})},
+            //             ],
+            //             {cancelable: false},
+            //         );
+            //     }
+            // })
+            // .catch((error) => {
+            //     console.log(error);
+            // })
         }else{
             Toast.show("Pleae fill the message text");
         }
@@ -241,38 +241,51 @@ export default class UserDetailScreen extends React.Component {
                 logo: global.loginInfo.logo,
             };
             const message = [{
-                sender_id: global.token,
-                receiver_id: global.userDetailApiToken,
+                sender_id: global.token, //client id
+                receiver_id: global.userDetailApiToken,// freelancer id
                 text: this.state.offerJobMessage,
                 message: this.state.offerJobMessage,
                 subject: 'Offer Job Message',
                 sender: sender,
-                type: 'offer_job'
+                id: '22',
+                user: {
+                    id: sender.api_token,
+                    name: sender.name,
+                    avatar: sender.logo ? sender.logo : profile,
+                },
+                meta: {
+                    received: true,
+                    direction: true
+                }
             }];
 
             firebaseSvc.send(message);
             this.setState({spinner: false});
-            Toast.show("تم إرسال الرسالة بنجاح");
-            // api.sendMessages(global.token, global.userDetailId, global.job_id, this.state.offerJobMessage, "Offer Job Message", "offer_job").then((res)=>{
-            //     console.log('sendMessage response____', res);  
-            //     if(res.status == 200){
-            //         this.setState({spinner: false});               
-            //         Toast.show(Labels.sendMessageSuccessTxt);
+            Toast.show(Labels.sendMessageSuccessTxt);
+            /*  
+                1. create new job
+                2. get job id
+            */
+            api.sendMessages(global.token, global.userDetailId, global.job_id, this.state.offerJobMessage, "Offer Job Message", "offer_job").then((res)=>{
+                console.log('sendMessage response____', res);  
+                if(res.status == 200){
+                    this.setState({spinner: false});               
+                    Toast.show(Labels.sendMessageSuccessTxt);
                     
-            //     }else{
-            //         Alert.alert(
-            //             'Error!',
-            //             res.errors,
-            //             [
-            //                 {text: 'OK', onPress: () =>  this.setState({spinner: false})},
-            //             ],
-            //             {cancelable: false},
-            //         );
-            //     }
-            // })
-            // .catch((error) => {
-            //     console.log(error);
-            // })
+                }else{
+                    Alert.alert(
+                        'Error!',
+                        res.errors,
+                        [
+                            {text: 'OK', onPress: () =>  this.setState({spinner: false})},
+                        ],
+                        {cancelable: false},
+                    );
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
         }else{
             Toast.show("Pleae fill the message text");
         }
@@ -301,7 +314,6 @@ export default class UserDetailScreen extends React.Component {
                             </TouchableOpacity>
                         </View>
                     </Right>
-                     {/* <HeaderScreen navigation={this.props.navigation} /> */}
                 </Header>
 
                 <Content contentContainerStyle={styles.layoutDefault}>
@@ -441,20 +453,17 @@ export default class UserDetailScreen extends React.Component {
                                             </View>
 
                                             <View style={styles.detailLine}>
-                                                <Text style={styles.detailItemSubject}>{Labels._userList_cart_category}</Text>
-                                                <Text style={styles.detailItemSubject}>:</Text>
+                                                <Text style={styles.detailItemSubject}>{Labels._userList_cart_category}:</Text>
                                                 <Text style={styles.detailItemContent}>{this.state.userDetailData.user.work_area ==null? "" :  this.state.userDetailData.user.work_area}</Text>
                                             </View>
 
                                             <View style={styles.detailLine}>
-                                                <Text style={styles.detailItemSubject}>{Labels._userList_cart_location}</Text>
-                                                <Text style={styles.detailItemSubject}>:</Text>
+                                                <Text style={styles.detailItemSubject}>{Labels._userList_cart_location}:</Text>
                                                 <Text style={styles.detailItemContent}>{this.state.userDetailData.user.address == null? "" : this.state.userDetailData.user.address}</Text>
                                             </View>
 
                                             <View style={styles.detailLine}>
-                                                <Text style={styles.detailItemSubject}>{Labels._userList_cart_hourly}</Text>
-                                                <Text style={styles.detailItemSubject}>:</Text>
+                                                <Text style={styles.detailItemSubject}>{Labels._userList_cart_hourly}:</Text>
                                                 <Text style={styles.detailItemContent}>{this.state.userDetailData.user.hourly_rate == null? "" : this.state.userDetailData.user.hourly_rate}</Text>
                                             </View>
                                         </TouchableOpacity>
@@ -521,9 +530,9 @@ export default class UserDetailScreen extends React.Component {
                                     <Text style={{padding: 20, textAlign: 'center', lineHeight: 16, fontFamily: 'TheSans-Plain'}}>{this.state.userDetailData.user.about_me == null? "" : this.state.userDetailData.user.about_me}</Text>
 
                                     <View style={{flexDirection: 'row', justifyContent: 'space-around', width: '100%'}}>
-                                        <TouchableOpacity onPress={()=>this.sendMessageModal()} style={{height: 40, width: '35%', backgroundColor: Colors.primarySpeical, borderRadius: 20, alignItems: 'center', justifyContent:'center'}}>
+                                        {/* <TouchableOpacity onPress={()=>this.sendMessageModal()} style={{height: 40, width: '35%', backgroundColor: Colors.primarySpeical, borderRadius: 20, alignItems: 'center', justifyContent:'center'}}>
                                             <Text style={{color: 'white'}}>{Labels._company_profile_sending}</Text>
-                                        </TouchableOpacity>
+                                        </TouchableOpacity> */}
 
                                         <TouchableOpacity  onPress={()=>this.sendOfferJobModal()}  style={{height: 40, width: '35%', backgroundColor: Colors.primarySpeical, borderRadius: 20, alignItems: 'center', justifyContent:'center'}}>
                                             <Text style={{color: 'white'}}>{Labels._user_detail_offer_button}</Text>
