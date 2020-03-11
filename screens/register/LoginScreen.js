@@ -49,20 +49,20 @@ export default class LoginScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: 'Corporate1@gmail.com',
-            //email: 'Individual@gmail.com',
-            password: '12345678',
-            userName: 'UserName111',
-            register_email: 'Corporate1122@gmail.com',
-            register_password: '123456',
-            c_password: '123456',
+            // email: 'Corporate1@gmail.com',
+            // email: 'Individual@gmail.com',
+            // password: '12345678',
+            // userName: 'UserName111',
+            // register_email: 'Corporate1122@gmail.com',
+            // register_password: '123456',
+            // c_password: '123456',
 
-            // email: '',
-            // password: '',
-            // userName: '',
-            // register_email: '',
-            // register_password: '',
-            // c_password: '',
+            email: '',
+            password: '',
+            userName: '',
+            register_email: '',
+            register_password: '',
+            c_password: '',
             
             pwShow_login: true,
             pwShow_register: true,

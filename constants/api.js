@@ -1,5 +1,5 @@
-//const server = "https://foras.app/api/";
-const server = "http://10.10.10.143/api/";
+const server = "https://foras.app/api/";
+//const server = "http://10.10.10.143/api/";
 
 const emailLoginUrl = server + "auth/login";
 const socialLoginUrl = server + "auth/login/socials";
@@ -11,9 +11,10 @@ const getJobCategoriesUrl = server + "categories";
 const createJobUrl = server + "jobs/create";
 const getJobListUrl = server + "jobs/read";
 const getJobDetailtUrl = server + "jobs/details/";
-const sendJobOfferUrl = server + "jobs/offer/";
-const sendJobAcceptUrl = server + "jobs/accept/";
-const sendJobRejectUrl = server + "jobs/reject/";
+const sendDirectofferUrl = server + "jobs/diroffer";
+const sendJobOfferUrl = server + "jobs/offer";
+const sendJobAcceptUrl = server + "jobs/accept";
+const sendJobRejectUrl = server + "jobs/reject";
 
 const getIndividualsListUrl = server + "users/individuals";
 
@@ -361,7 +362,7 @@ const api = {
     }, 
     
     getJobDetail(token, id) {
-        console.log('_====getJobDetail API===');
+        console.log('_====getJobDetail API===', id);
         var url =  getJobDetailtUrl + id ;
         result = fetch(url, {
             method: 'GET',
@@ -374,44 +375,60 @@ const api = {
         
         return result;
     },
-    sendJobOffer(token) {
-        console.log('_====sendJobOffer API===');
-        var url =  sendJobOfferUrl + id ;
-        result = fetch(url, {
+    
+    sendDirectoffer(msgdata, token) {
+        console.log('_====sendDirectoffer API===');
+        result = fetch(sendDirectofferUrl, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + token
-            },            
+            },
+            body: JSON.stringify(msgdata)
+        }).then((response) => response.json());
+        return result;
+    },
+
+    sendJobOffer(message, token) {
+        console.log('_====sendJobOffer API===');
+        result = fetch(sendJobOfferUrl, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },
+            body: JSON.stringify(message)
         }).then((response) => response.json());
         
         return result;
     },
-    sendJobAccept(token) {
+
+    sendJobAccept(message, token) {
         console.log('_====sendJobAccept API===');
-        var url =  sendJobAcceptUrl + id ;
-        result = fetch(url, {
+        result = fetch(sendJobAcceptUrl, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + token
-            },            
+            },
+            body: JSON.stringify(message)             
         }).then((response) => response.json());
         
         return result;
     }, 
-    sendJobReject(token) {
+    sendJobReject(message,token) {
         console.log('_====sendJobReject API===');
-        var url =  sendJobRejectUrl + id ;
-        result = fetch(url, {
+        result = fetch(sendJobRejectUrl, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + token
-            },            
+            },
+            body: JSON.stringify(message)           
         }).then((response) => response.json());
         
         return result;

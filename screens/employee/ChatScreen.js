@@ -43,9 +43,9 @@ export default class ChatScreen extends React.Component {
             jobID: global.jobDetailId,
             jobTitle: global.chatDetail.subject
         });
-        console.log("++++++++++++++++++++++++",global.offerMessage);
+
         firebaseSvc.refOn(global.chatDetail, message => {
-                if(message.subject == 'Offer Job Message'){
+                if(message.subject == "Offer Job Message"){
                     global.offerMessage = 1;
                 } else {
                     global.offerMessage = 0;
@@ -73,7 +73,7 @@ export default class ChatScreen extends React.Component {
                 receiver_id: global.receiverID,
                 text: obj.text,
                 message: obj.text,
-                subject: 'real message',
+                subject: "real message",
                 sender: sender,
                 id: this.state.jobID,
                 user: {
@@ -108,13 +108,13 @@ export default class ChatScreen extends React.Component {
         global.offerMessage = 0;
         this.setState({accpet: "Accepted"});
         const sender = {name : global.loginInfo.name, api_token : global.token, logo : global.loginInfo.logo};
-        let message = [];
-        message = [{
+        
+        const message = [{
             sender_id: global.senderID,
             receiver_id: global.receiverID,
             text: sender.name + " accepted",
             message: sender.name + " accepted",
-            subject: 'accept message',
+            subject: "accept message",
             sender: sender,
             id: this.state.jobID,
             user: {
@@ -127,20 +127,40 @@ export default class ChatScreen extends React.Component {
                 direction: true
             }
         }];
-        firebaseSvc.send(message);  
+        api.sendJobAccept(message[0], global.token).then( (res)=>{
+            if (res.status == 200) {      
+                console.log(res);
+                firebaseSvc.send(message);
+                this.setState({spinner: false});
+                Toast.show("Accepted");
+            } else {
+                this.setState({spinner: false})
+                // Alert.alert(
+                //     'Error!',
+                //     res.errors,
+                //     [
+                //         {text: 'OK', onPress: () =>  this.setState({spinner: false})},
+                //     ],
+                //     {cancelable: false},
+                // );
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        })
     }
 
     onClickReject(jobID) {
         global.offerMessage = 0;
         this.setState({reject: "Rejected"});
         const sender = {name : global.loginInfo.name, api_token : global.token, logo : global.loginInfo.logo};
-        let message = [];
-        message = [{
+        
+        const message = [{
             sender_id: global.senderID,
             receiver_id: global.receiverID,
             text: sender.name + " Rejected",
             message: sender.name + " Rejected",
-            subject: 'reject message',
+            subject: "reject message",
             sender: sender,
             id: this.state.jobID,
             user: {
@@ -153,7 +173,27 @@ export default class ChatScreen extends React.Component {
                 direction: true
             }
         }];
-        firebaseSvc.send(message);
+        api.sendJobReject(message[0], global.token).then( (res)=>{
+            if (res.status == 200) {      
+                console.log(res);
+                firebaseSvc.send(message);
+                this.setState({spinner: false});
+                Toast.show("Rejected");
+            } else {
+                this.setState({spinner: false})
+                // Alert.alert(
+                //     'Error!',
+                //     res.errors,
+                //     [
+                //         {text: 'OK', onPress: () =>  this.setState({spinner: false})},
+                //     ],
+                //     {cancelable: false},
+                // );
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        })
     }
     render() {
         return (

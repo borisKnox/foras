@@ -44,17 +44,25 @@ export default class ChaterScreen extends React.Component {
             jobID: global.chatDetail.id,
             jobTitle: global.chatDetail.subject
         });        
- 
-        // if (global.chatDetail != this.state.messages) {   
 
-            firebaseSvc.refOn(global.chatDetail, message => 
+        firebaseSvc.refOn(global.chatDetail, message => {
+                if(message.subject == 'Apply Job Message'){
+                    global.applyMessage = 1;
+                }
+                if(message.subject == 'accept message'){
+                    global.applyMessage = 0;
+                }
+                if(message.subject == 'reject message'){
+                    global.applyMessage = 1;
+                }
                 this.setState(previousState => ({
                     messages: GiftedChat.append(previousState.messages, message),
                     direction: global.chatDetail.meta.direction,
                     offer: global.chatDetail.subject
                 }))
-            );
-        // } 
+            }
+        );
+
     }
 
     componentWillUnmount() {
@@ -68,14 +76,13 @@ export default class ChaterScreen extends React.Component {
 
     onClickAward(jobID){
         const sender = {name : global.loginInfo.name, api_token : global.token, logo : global.loginInfo.logo};
-        let message = [];
     
-        message = [{
+        const message = [{
             sender_id: global.senderID,
             receiver_id: global.receiverID,
-            text:  this.state.senderName + ' are awarded',
-            message: this.state.senderName + ' are awarded',
-            subject: 'Offer Job Message',
+            text:  this.state.senderName + " are awarded",
+            message: this.state.senderName + " are awarded",
+            subject: "Offer Job Message",
             sender: sender,
             id: this.state.jobID,
             user: {
@@ -89,7 +96,26 @@ export default class ChaterScreen extends React.Component {
             }
         }];
 
-        firebaseSvc.send(message);
+        api.sendJobOffer(message[0], global.token).then( (res)=>{
+            if (res.status == 200) {      
+                console.log(res);
+                firebaseSvc.send(message);
+                this.setState({spinner: false});
+            } else {
+                this.setState({spinner: false})
+                // Alert.alert(
+                //     'Error!',
+                //     res.errors,
+                //     [
+                //         {text: 'OK', onPress: () =>  this.setState({spinner: false})},
+                //     ],
+                //     {cancelable: false},
+                // );
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        })
     }
 
     sendMsg = (msg) => {
@@ -141,11 +167,13 @@ export default class ChaterScreen extends React.Component {
                     </Left>
                     <Body style={styles.headerBody }>
                         {/* <Title style={{color: '#FFF'}}>{this.state.senderName}</Title> */}
-                        
+                        { global.applyMessage == 1 ? 
                         <TouchableOpacity style={{borderColor: 'white', borderRadius: 5, borderWidth: 0.5}} onPress={() => this.onClickAward(this.state.jobID)}>
                             <Text style={{color:'white', padding: 8}}>{this.state.award}</Text>
                         </TouchableOpacity>
-                        
+                        :
+                        <Text>{this.state.senderName} Accepted</Text>
+                        }
                     </Body>
                     <Right style={{flex: 1}}>
                         <View style={{flexDirection: 'row'}}>

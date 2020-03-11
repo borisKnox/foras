@@ -134,7 +134,7 @@ export default class JobDetailScreen extends React.Component {
         console.log("==============didmonunt of jobDetailScreen==============")
         this.setState({spinner: true});
         api.getJobDetail(global.token, global.jobDetailId).then((res)=>{
-            console.log('jobDetailData response____');
+            console.log('jobDetailData response____', res);
             if(res.status == 200){
                 this.setState({spinner: false});
                 this.setState({jobDetailData: res.data});
@@ -316,7 +316,7 @@ export default class JobDetailScreen extends React.Component {
                 receiver_id: global.userDetailApiToken,//client id
                 text: this.state.applyJobMessage,
                 message: this.state.applyJobMessage,
-                subject: 'Apply Job Message',
+                subject: "Apply Job Message",
                 sender: sender,
                 id: this.state.jobDetailData.job.id,
                 user: {

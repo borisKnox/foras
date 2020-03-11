@@ -241,51 +241,75 @@ export default class UserDetailScreen extends React.Component {
                 logo: global.loginInfo.logo,
             };
             const message = [{
-                sender_id: global.token, //client id
-                receiver_id: global.userDetailApiToken,// freelancer id
+                sender_id: global.token, 
+                receiver_id: global.userDetailApiToken,
                 text: this.state.offerJobMessage,
                 message: this.state.offerJobMessage,
                 subject: 'Offer Job Message',
                 sender: sender,
-                id: '22',
+                id: 0,
                 user: {
                     id: sender.api_token,
                     name: sender.name,
-                    avatar: sender.logo ? sender.logo : profile,
+                    avatar: sender.logo ? sender.logo : sender.logo,
                 },
                 meta: {
                     received: true,
                     direction: true
                 }
             }];
-
-            firebaseSvc.send(message);
-            this.setState({spinner: false});
-            Toast.show(Labels.sendMessageSuccessTxt);
-            /*  
-                1. create new job
-                2. get job id
-            */
-            api.sendMessages(global.token, global.userDetailId, global.job_id, this.state.offerJobMessage, "Offer Job Message", "offer_job").then((res)=>{
-                console.log('sendMessage response____', res);  
-                if(res.status == 200){
-                    this.setState({spinner: false});               
+            
+            api.sendDirectoffer(message[0], global.token).then((res)=>{
+                if (res.status == 200) {      
+                    console.log(res);
+                    message[0].id = res.id;
+                    firebaseSvc.send(message);
+                    this.setState({spinner: false});
                     Toast.show(Labels.sendMessageSuccessTxt);
-                    
-                }else{
-                    Alert.alert(
-                        'Error!',
-                        res.errors,
-                        [
-                            {text: 'OK', onPress: () =>  this.setState({spinner: false})},
-                        ],
-                        {cancelable: false},
-                    );
+                } else {
+                    this.setState({spinner: false})
+                    // Alert.alert(
+                    //     'Error!',
+                    //     res.errors,
+                    //     [
+                    //         {text: 'OK', onPress: () =>  this.setState({spinner: false})},
+                    //     ],
+                    //     {cancelable: false},
+                    // );
                 }
             })
             .catch((error) => {
                 console.log(error);
             })
+
+            
+
+            
+            
+            /*  
+                1. create new job
+                2. get job id
+            */
+            // api.sendMessages(global.token, global.userDetailId, global.job_id, this.state.offerJobMessage, "Offer Job Message", "offer_job").then((res)=>{
+            //     console.log('sendMessage response____', res);  
+            //     if(res.status == 200){
+            //         this.setState({spinner: false});               
+            //         Toast.show(Labels.sendMessageSuccessTxt);
+                    
+            //     }else{
+            //         Alert.alert(
+            //             'Error!',
+            //             res.errors,
+            //             [
+            //                 {text: 'OK', onPress: () =>  this.setState({spinner: false})},
+            //             ],
+            //             {cancelable: false},
+            //         );
+            //     }
+            // })
+            // .catch((error) => {
+            //     console.log(error);
+            // })
         }else{
             Toast.show("Pleae fill the message text");
         }

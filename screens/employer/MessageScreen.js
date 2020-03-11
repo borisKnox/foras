@@ -171,10 +171,8 @@ export default class MessageScreen extends React.Component {
                 global.favoriteIndividualStatus = true;                
             }
         })
-        if(item.subject == "Apply Job Message"){
+        if(item.subject == 'Apply Job Message'){
             global.applyMessage = 1;
-        } else{
-            global.applyMessage = 0;
         }
         global.senderID = item.sender_id;
         global.receiverID = item.receiver_id;
